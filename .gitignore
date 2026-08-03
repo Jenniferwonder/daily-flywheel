@@ -1,0 +1,7 @@
+# Real local paths and owner name. Never commit.
+local.config.md
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
