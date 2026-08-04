@@ -13,9 +13,11 @@ Ask everything at once, numbered, then wait for a single reply.
 2. 昨天那个成果做完了吗？实际花了多久？
 3. 昨天发出去的东西有反馈数字吗？（点赞/评论/转发/关注，没有就跳过）
 4. <从 objective 的 Open Questions 里取 1-2 个能力问题，要证据>
+5. （仅当昨天 task ## Review 含「校准: 待收」时）导出路径里的文章终稿定了吗？定了给我路径/确认，我补做 v1↔终稿校准；发布链接若还没写进 task 的 wechat/zhihu/juejin/bilibili，一并补上
 ```
 
 Day one has no items 2 and 3 — drop them rather than asking the user to type "无".
+Drop item 5 when there is no deferred calibration.
 
 Never split this across turns. If the reply is partial, work with what came back and note the gap; do not re-interrogate.
 

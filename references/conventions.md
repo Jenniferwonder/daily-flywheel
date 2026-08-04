@@ -204,6 +204,20 @@ Checkboxes only mean something to the Tasks plugin with its emoji fields. The da
 
 Use `🛫` for start date and `✅` for completion date. Add `📅` for a due date only when the item genuinely has a deadline.
 
+## Article config (ship)
+
+Private files in the skill directory (gitignored, never committed):
+
+| File | Role |
+|------|------|
+| `local.article.config.md` | Style, audience, export paths, illustration budget for `df ship` |
+| `local.article.memory.md` | ≤7 recent executable rewrite rules learned from v1→final diffs |
+
+Copy `local.article.config.example.md` to create the real config. Article ship
+refuses to draft if the file or its required keys are missing. Publish URLs
+belong in the task frontmatter `wechat` / `zhihu` / `juejin` / `bilibili` plus a
+short `发布链接` note under `## Outcomes` — that is the single retro surface.
+
 ## Objective file
 
 The big goal, milestones, and skill profile live in one `type: P` file under the existing project tree:

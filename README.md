@@ -19,7 +19,7 @@
 
 ```
 早上  df plan   收昨天状态 → 复盘 → 今日候选 → 选定 → 写入日记与任务文件
-晚上  df ship   收行动状态 → 生成成稿 → 第一读者点评 → 平台格式导出
+晚上  df ship   收行动状态 → 按文章配置双写成稿 → 第一读者点评 → 时间盒配图 → 校准改稿规则 → 发布链接回写任务
 ```
 
 首次使用先跑 `df init`：把模糊的大目标翻译成可验收的里程碑，做一次带证据的技能画像访谈，建立去重基线。
@@ -69,6 +69,14 @@ copy local.config.example.md local.config.md
 
 技能读不到配置会直接停下来提示你，不会去猜路径 —— 猜错会把文件写进错误的 vault。
 
+写文章还需要一份私有文章配置（同样不进仓库）：
+
+```powershell
+copy local.article.config.example.md local.article.config.md
+```
+
+填好 `audience`、`export_dir`、`export_slug_pattern` 等。`df ship` 缺这份配置会拒绝写正文，避免无约束草稿再靠手改捞回来。
+
 **4. 跑起来**
 
 在 Cursor 里输入 `df init`。
@@ -84,13 +92,14 @@ copy local.config.example.md local.config.md
 ## 结构
 
 ```
-SKILL.md                      路由 + 全局规则，约 60 行
+SKILL.md                            路由 + 全局规则
 references/
-  conventions.md              路径、schema、硬约束（结构契约）
-  init.md                     一次性引导
-  plan.md                     早上
-  ship.md                     晚上
-local.config.example.md       配置模板
+  conventions.md                    路径、schema、硬约束（结构契约）
+  init.md                           一次性引导
+  plan.md                           早上
+  ship.md                           晚上（含文章配置 / 双写 / 校准）
+local.config.example.md             vault 路径模板
+local.article.config.example.md     文章风格/读者/导出/配图模板（私有）
 ```
 
 `SKILL.md` 只做路由，按阶段只加载一个 reference。这是刻意的上下文控制：一次对话不需要把四份文档全读进去。

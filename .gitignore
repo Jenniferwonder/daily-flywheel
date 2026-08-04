@@ -1,6 +1,10 @@
 # Real local paths and owner name. Never commit.
 local.config.md
 
+# Private article brief + learned edit rules. Never commit.
+local.article.config.md
+local.article.memory.md
+
 # OS junk
 Thumbs.db
 desktop.ini

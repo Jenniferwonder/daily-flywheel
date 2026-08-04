@@ -34,6 +34,16 @@ If `local.config.md` does not exist, stop and tell the user to copy `local.confi
 
 If `NOTES_VAULT` is absent or points nowhere, skip dedup scanning rather than failing.
 
+### Article config (ship only)
+
+Article drafts also require `local.article.config.md` (gitignored). Copy from
+`local.article.config.example.md`. It holds style, audience, export paths, and
+illustration budget. Learned edit rules from v1→final diffs live in
+`local.article.memory.md` (also gitignored). See `references/ship.md` Step 0.
+
+If the article config is missing during `df ship` for an article deliverable,
+refuse to draft — do not silently fall back to an unconfigured write.
+
 ## Routing
 
 Always read `references/conventions.md` first — it holds every path, schema, and hard constraint. Then read exactly one mode reference. Never read all of them.
@@ -42,7 +52,7 @@ Always read `references/conventions.md` first — it holds every path, schema, a
 |---------|------|-----------|
 | `df init`, first ever run, or the objective file is missing | Bootstrap the big goal, milestones, skill profile | `references/init.md` |
 | `df plan`, morning, "今天做什么" | Yesterday's close-out + today's deliverable + action plan | `references/plan.md` |
-| `df ship`, evening, "写出来", "收工" | Action status + finished draft + critique + platform export | `references/ship.md` |
+| `df ship`, evening, "写出来", "收工" | Action status + configured draft (dual-write) + critique + illustrate + calibrate + publish links | `references/ship.md` |
 
 If the mode is ambiguous, check whether today's daily note already has a filled `## Actions` section: empty means `plan`, filled means `ship`.
 
