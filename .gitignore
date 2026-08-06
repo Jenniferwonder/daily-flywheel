@@ -9,3 +9,6 @@ local.article.memory.md
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Generated illustrations. README images are hosted externally to keep clones small.
+imgs/
