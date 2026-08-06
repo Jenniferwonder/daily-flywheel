@@ -27,7 +27,7 @@ audience:
 export_dir: D:\YourFolder\Notes\ai\insights-to-share
 
 # Relative to export_dir. `{slug}` comes from today's task slug
-# (e.g. cpe-df-ship-article-flow → df-ship-article-flow or a shorter slug you confirm).
+# (e.g. cpe-example-flow → example-flow or a shorter slug you confirm).
 export_slug_pattern: "pub-{slug}/{slug}.md"
 
 # Relative to export_dir. Cover + inline images land here.
@@ -36,15 +36,24 @@ images_dir_pattern: "pub-{slug}/imgs"
 # Illustration budget
 cover: true
 max_inline_images: 4
-illustrate_confirm: false          # ship passes "按默认出图 / 跳过确认" to baoyu skills
+illustrate_confirm: false          # ship passes skip-confirm to the illustrator skills when false
 illustrate_timebox_min: 45         # on timeout: drop inline images first, keep cover
+
+# Per-slot export / handoff for df ship Step 6.
+# Keys must match PUBLISH_SLOTS in local.config.md.
+# Put converter commands and paste targets here — not in the open references.
+publish_export: |
+  pub_a: paste the export-path markdown (or run your converter, then paste)
+  pub_b: paste the export-path markdown
+  pub_c: skip unless you have a converter
 ```
 
 ## Notes
 
 - First draft is written to **both** the task file `## Outcomes` (frozen as v1 for
   calibration) and the resolved export path (the only file you edit afterward).
-- After publish, put platform URLs into the task frontmatter `wechat` / `zhihu` /
-  `juejin` / `bilibili` so the next morning's `df plan` can collect feedback in one place.
+- After publish, put platform URLs into the task frontmatter keys listed in
+  `PUBLISH_SLOTS` (`local.config.md`) so the next morning's `df plan` can collect
+  feedback in one place.
 - Edit patterns learned from v1→final diffs live in `local.article.memory.md`
   (also gitignored), not in this file.

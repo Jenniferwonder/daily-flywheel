@@ -1,25 +1,42 @@
 # Mode: init
 
-One-time bootstrap. Produces the objective file that `plan` reads every morning.
+One-time bootstrap. Produces the north-star objective at `{{OBJECTIVE_FILE}}` that `plan` reads every morning, plus the capability sub-project at `{{CAPABILITY_FILE}}` holding the skill profile and engineering milestones.
 
-Gate: if `{{DAILY_VAULT}}\Projects\Scope\TechSkills\AI\ai-agent-flywheel.md` already exists, do not re-run. Say it exists, show the current goal and milestones, and ask whether to refresh the goal, add to the skill profile, or exit.
+Gate: if `{{DAILY_VAULT}}\{{OBJECTIVE_FILE}}` already exists, do not re-run. Say it exists, show Purpose + ladders + This Year/Month/Week, and ask whether to refresh the goal, refresh the skill profile on the capability note, or exit. If only a capability-style note exists without a north star, offer to split it (create the north star, slim the capability file) rather than inventing a second unrelated goal.
+
+If `local.config.md` has no `OBJECTIVE_FILE`, ask for the path and tell the user to save it there — do not hardcode a goal filename into any file in this repository.
 
 ## Step 1 — Make the goal judgeable
 
-Ask the user for their big goal. Most people state something like this example:
+Ask the user for their big goal. Most people state something shaped like this invented example:
 
-> 掌握践行能让 AI 价值最大化的学习工作流，掌握 AI Agent 工程实践能力，每日输出相关学习成果
+> 精通某个技术方向的工程实践，每天输出学习成果，尽快拿到可核对的结果
 
-That example is two goals plus a constraint, and neither goal has a finish line. "掌握某种工作流" cannot be checked off — which is exactly why systems like this stall: with no way to tell whether a day moved the needle, every day feels equally arbitrary. Expect the user's first answer to have the same shape and treat fixing it as the real work of this step.
+That mixes capability with outcomes and has no finish line. Split it into **two layers**:
 
-Translate it into 3 to 5 milestones that a stranger could verify from the outside. A milestone qualifies only if you could point at an artifact and say "done". Examples of the required shape:
+1. **Result ladders** on the objective note. Ask the user which one or two outcomes the goal is actually about, and what counter each is measured in. Each ladder is a set of rising thresholds verifiable from a dashboard, a bill, or a public artifact. Record the dimension names in `## 维度字典` — those names become the allowed `goalDim` values, so nothing in the skill needs to know what they are.
+2. **Capability milestones** on the capability note — artifacts: a skill, a demo, a series, a tool the user actually uses daily.
 
-- Bad: 深入理解 Agent 架构
-- Good: 开源一个能跑通 plan → tool call → 自我修正循环的最小 Agent，README 里有可复现的运行步骤
-- Bad: 掌握 RAG
-- Good: 写完一个 4 篇的 RAG 系列，最后一篇是自己踩过的 3 个坑
+A milestone qualifies only if you could point at an artifact or a number and say "done":
 
-Confirm the milestones with the user before writing anything. Keep the user's own wording where it is already concrete.
+- Bad: 深入理解某个架构
+- Good: 开源一个能跑通完整主流程的最小项目，README 里有陌生人可复现的运行步骤
+- Bad: 尽快拿到结果（无可核对计数）
+- Good: <某可核对计数> 累计 ≥ <N>（分项快照留痕）
+
+### Measure the baseline before writing any counted milestone
+
+For every ladder measured by a counter, ask for the current value of each source that feeds it — including sources built from unrelated past work. Then decide with the user how that inherited stock counts. This matters: an account grown from an earlier, unrelated direction can satisfy the first rungs on day one, which makes the ladder useless as a daily compass and quietly turns the whole plan into theatre.
+
+Default treatment, unless the user picks otherwise:
+
+- Keep the absolute ladder when the stated purpose is an absolute figure, and mark already-passed rungs as **存量继承** with the date and where the stock came from, explicitly not counted as a win.
+- Add a parallel **净增 ladder** measured from the baseline date. That one drives daily candidates.
+- Record the baseline as an immutable table row; all future net change is computed against it.
+
+### A ladder whose first rung needs a decision is not schedulable yet
+
+If the first rung depends on a choice the user has not made — what to offer, to whom, through what channel — force that decision now, out of assets that already exist. "先调研一下" is not a milestone, and a ladder that starts with research will sit untouched for months.
 
 ## Step 2 — Optional goal optimization across models
 
@@ -31,7 +48,7 @@ Do not fan out to multiple models yourself — that doubles cost for a decision 
 
 ## Step 3 — Skill profile interview
 
-Ask 5 to 8 questions in **one** numbered block, then wait for a single reply. Derive the questions from the milestones just agreed, not from a fixed list.
+Ask 5 to 8 questions in **one** numbered block, then wait for a single reply. Derive the questions from the capability milestones just agreed, not from a fixed list.
 
 Every question must target one capability the milestones actually require, and must demand evidence. State the rule up front:
 
@@ -63,45 +80,83 @@ For the default goal, the capabilities worth probing cluster into three groups. 
 
 ## Step 4 — Dedup baseline
 
-Run the scoped scans from `conventions.md` and record, in the objective file, a compact list of topics already covered — filenames only, grouped, no bodies. This is what stops `plan` from recommending a topic written in May.
+Run the scoped scans from `conventions.md` and record, in the capability note, a compact list of topics already covered — filenames only, grouped, no bodies. This is what stops `plan` from recommending a topic written in May.
 
-Keep it to a list of topic keywords, not raw paths. Note the last-covered date only where it is obvious from the filename.
+Keep it to topic keywords, not raw paths. Note the last-covered date only where it is obvious from the filename.
 
-## Step 5 — Write the objective file
+## Step 5 — Write the objective files
 
-Path and frontmatter are specified in `conventions.md`. Body:
+Paths and frontmatter are in `conventions.md`.
+
+### The north-star note (`{{OBJECTIVE_FILE}}`, `type: O`)
+
+Required sections:
 
 ```markdown
-# ai-agent-flywheel
+# <objective slug>
 
 ## Purpose
 <the goal in the user's own words, one paragraph>
 
-## Milestones
-- [ ] <verifiable milestone> 
-- [ ] <verifiable milestone>
+## 维度字典
+<allowed goalDim values: the user's result dimensions + leverage + capability,
+ each with the counter or artifact that verifies it>
 
+## 验收口径
+### <result dimension 1>
+<what is counted, which sources feed it, inherited-stock treatment, how it is recorded>
+### <result dimension 2>
+<definitions and any prerequisite decision the first rung depends on>
+
+## Milestones
+### <dimension 1> · 绝对值
+### <dimension 1> · 净增（自 <baseline date> 基线 <N> 起算）
+### <dimension 2>
+### 能力底座 → 指向能力子工程
+
+## This Year
+## This Month
+## This Week
+
+## 级联规则
+<objective is the single focus source; df plan pushes mirrors down; tasks need goalDim + goalStep>
+
+## Baseline · 分项快照
+| 来源 | 计数 | 更新日期 | 备注 |
+
+## Sub-projects
+## Actions
+## Review
+```
+
+Every `This Year` / `This Month` / `This Week` item must carry a number or an artifact someone else could check. An item that would still be green in a month where no result ladder moved at all is a defect — rewrite it.
+
+Write the user's dimension names, counters, thresholds, and baseline **into the note only**. Do not echo any of them back into `local.config.md` or into any file in this repository.
+
+### The capability note (`{{CAPABILITY_FILE}}`, `type: P`)
+
+```markdown
+# <capability slug>
+
+## Purpose
+能力底座；父目标 [[<objective slug>]]
+
+## Parent
+<parent link, no This Year/Month/Week here, constraint: every milestone must name the ladder cell it unblocks>
+
+## Milestones
 ## Skill Profile
 _最后更新: YYYY-MM-DD_
 
 | 能力 | 自评 | 校准 | 证据 |
 |------|------|------|------|
-| 工具调用与错误恢复 | L3 | L2 | 只跟着文档跑过，没处理过失败重试 |
 
 ## Covered Topics
-_去重基线，扫描自 NOTES_VAULT，YYYY-MM-DD_
-- RAG: 分块、检索、评估
-- Prompt engineering: ...
-
 ## Open Questions
-_画像里还没问到的能力，plan 每天补 1-2 个_
-- ...
-
 ## Actions
-
 ## Review
 ```
 
-`Open Questions` is what makes the progressive interview work: `init` deliberately leaves gaps, and `plan` pulls one or two from here each morning instead of running a 30-minute onboarding that blocks day one.
+`Open Questions` stays on the capability file: `init` deliberately leaves gaps, and `plan` pulls one or two each morning instead of a 30-minute onboarding that blocks day one.
 
-After writing, confirm in chat with the goal, the milestones, and the three weakest capabilities — those are where the first few days' deliverables will come from. Then tell the user to run `df plan` to start day one.
+After writing, confirm in chat with the ladders, the baseline, This Year focus, and the three weakest capabilities. Then tell the user to run `df plan` to start day one.

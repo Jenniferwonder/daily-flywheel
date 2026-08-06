@@ -33,6 +33,10 @@ Resolve:
 | `export_dir` + `export_slug_pattern` | Working markdown path (edit target) |
 | `images_dir_pattern` | Cover + inline image directory |
 | `cover` / `max_inline_images` / `illustrate_confirm` / `illustrate_timebox_min` | Illustration budget |
+| `publish_export` | Per-slot export / handoff text; keys must match `PUBLISH_SLOTS` |
+
+Also load `PUBLISH_SLOTS` from `local.config.md` — those are the only frontmatter
+keys used for publish URLs. If the key is missing, stop and ask the user to add it.
 
 Confirm `{slug}` with the user in one short line if ambiguous (derive from the
 task filename by default, stripping the `cpe-` / `te-` / `pm-` prefix).
@@ -160,19 +164,14 @@ On timebox breach: **drop remaining inline images first, keep the cover**,
 link whatever exists into the export-path markdown, and continue. Do not start
 hand-tuning individual images inside ship.
 
-## Step 6 — Export for platforms
+## Step 6 — Export for publish slots
 
 Phase 0 does not auto-publish. Hand over files.
 
 - **工作稿** — the export-path markdown (already final edit target).
-- **微信** — if `baoyu-post-to-wechat` is installed:
-
-```powershell
-npx -y bun "<baoyu-post-to-wechat>\scripts\md-to-wechat.ts" "<export_path_markdown>" --help
-```
-
-  Run with `--help` first, then convert from the export-path file.
-- **知乎 / 掘金** — paste the export-path markdown directly.
+- **Each key in `PUBLISH_SLOTS`** — read the matching bullet under
+  `publish_export` in `local.article.config.md` and follow it. If a slot has no
+  entry, say so in one line and skip rather than inventing a converter.
 - **GitHub** — for open source, README is the deliverable.
 
 ## Step 7 — Write back task + daily
@@ -195,7 +194,7 @@ Ask in a single block:
 
 ```
 1. 导出路径里的 md 已是终稿了吗？（是 → 我现在做 v1↔终稿校准；否 → 明早 df plan 再收）
-2. 各平台发布链接？（微信 / 知乎 / 掘金 / B 站，没有的写「未发」）
+2. 各发布槽的链接？（按 PUBLISH_SLOTS 逐个问；没有的写「未发」）
 ```
 
 ### Calibration (when answer 1 is 是)
@@ -212,17 +211,14 @@ If answer 1 is 否, write a one-line deferral into the task `## Review`
 
 ### Publish links (always attempt)
 
-Write whatever URLs the user provides into the task frontmatter:
-
-- `wechat:` / `zhihu:` / `juejin:` / `bilibili:`
-
-Also append a compact `发布链接` bullet list under `## Outcomes` (below the
-frozen v1, next to `终稿路径`) so Dataview/task review and human scanning share
-one place. **Do not leave published articles linkless in the task file** — that
-breaks the next morning's feedback collection and the weekly retro.
+Write whatever URLs the user provides into the task frontmatter keys listed by
+`PUBLISH_SLOTS`. Also append a compact `发布链接` bullet list under `## Outcomes`
+(below the frozen v1, next to `终稿路径`) so Dataview/task review and human
+scanning share one place. **Do not leave published articles linkless in the task
+file** — that breaks the next morning's feedback collection and the weekly retro.
 
 If the user has not published yet, leave the fields empty and close with:
 
-> 发出去之后把链接填进 task 的 `wechat` / `zhihu` / `juejin` / `bilibili`（或回一句让我写入），明早 `df plan` 收反馈数字；若终稿今晚才定，校准也一并在那时收。
+> 发出去之后把链接填进 task 的 PUBLISH_SLOTS 各字段（或回一句让我写入），明早 `df plan` 收反馈数字；若终稿今晚才定，校准也一并在那时收。
 
 Do not restate the article, the plan, or the critique.

@@ -22,13 +22,26 @@ Never substitute a broader scan. On a cloud-synced or network drive a depth-2 re
 # Point this at the topic subtree you actually write about, not the vault root.
 Get-ChildItem -LiteralPath "{{NOTES_VAULT}}\ai" -Recurse -Filter *.md -Name
 
+# Yesterday's publishable articles only (for df plan Step 0 link sync). Shallow.
+Get-ChildItem -LiteralPath "{{NOTES_VAULT}}\ai\insights-to-share" -Directory -Filter "pub-*" -Name
+# Then read frontmatter of the matched pub-*/pub-*.md — not the body.
+
 # Existing and finished tasks (flat, fast)
 Get-ChildItem -LiteralPath "{{DAILY_VAULT}}\Tasks\New\Backlog" -Filter *.md -Name
 Get-ChildItem -LiteralPath "{{DAILY_VAULT}}\Tasks\New\Completed" -Filter *.md -Name
 
-# Recent daily notes (flat, fast)
-Get-ChildItem -LiteralPath "{{DAILY_VAULT}}\Daily" -Filter *.md -Name
+# Recent daily notes — year / quarter / month / ISO-week tree (on content only)
+# Example current week: Daily\2026\2026-Q1\2026-03\2026-W10\
+Get-ChildItem -LiteralPath "{{DAILY_VAULT}}\Daily\YYYY" -Directory -Filter "YYYY-Q*" -Name
+Get-ChildItem -LiteralPath "{{DAILY_VAULT}}\Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-Www" -Filter *.md -Name
 ```
+
+Week folder placement: ISO week, hung under the month that contains that week's **Monday**. Do not create empty month/week review stubs.
+
+Weekly review note: `Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-Www\YYYY-Www.md`  
+Monthly review note: `Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-MM.md`  
+Templates: `Templates\Tp-Daily\tp-Weekly.md`, `Templates\Tp-Daily\tp-Monthly.md`  
+`df plan` creates/fills these on ISO Sunday / calendar month-end (see `plan.md` Step 0b). Agent-written reviews must be fully rendered — no Templater markers.
 
 Filenames only. Do not read note bodies from the Notes vault; titles plus the dedup list are enough to tell whether a topic is already covered.
 
@@ -52,7 +65,7 @@ The distinction that matters most here is `P` versus `O`: anything with mileston
 ## Dates
 
 - Daily note filename and all date fields: `YYYY-MM-DD`
-- Week link: `YYYY-Www` using the **ISO** week number, e.g. 2026-08-03 falls in `[[2026-W32]]`
+- Week link: `YYYY-Www` using the **ISO** week number, e.g. 2026-03-05 falls in `[[2026-W10]]`
 
 ```powershell
 # Resolve today's date and ISO week before writing any file
@@ -61,25 +74,30 @@ $d.ToString('yyyy-MM-dd')
 "{0}-W{1:D2}" -f $d.Year, [System.Globalization.ISOWeek]::GetWeekOfYear($d)
 ```
 
-- Sprint field format in this layout is `YY-MM-A`, e.g. `26-08-A`. This is an example of one convention, not a requirement. If a task created this month already uses a different suffix, match it rather than inventing one.
+- Sprint field format in this layout is `YY-MM-A`, e.g. `26-03-A`. This is an example of one convention, not a requirement. If a task created this month already uses a different suffix, match it rather than inventing one.
 
 ## Daily note
 
-Path: `{{DAILY_VAULT}}\Daily\YYYY-MM-DD.md`
+Path (aligned with `Daily/2023` layout):
+
+`{{DAILY_VAULT}}\Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-Www\YYYY-MM-DD.md`
+
+Resolve `Qn` / `MM` / `Www` from the note's date: ISO week number, week folder under the month of that week's Monday, quarter from that month. Create intermediate folders as needed. Year-level files (`YYYY.md`, `DB-Daily-YYYY.md`) stay in `Daily\YYYY\`.
+
 Source template: `{{DAILY_VAULT}}\Templates\Tp-Daily\tp-Daily Plan.md`
 
-If the file already exists, fill its empty sections and leave everything else alone. If it does not, write it fully rendered — every template expression resolved to a literal, none surviving. Rendered shape for 2026-08-03, substituting the real date everywhere:
+If the file already exists, fill its empty sections and leave everything else alone. If it does not, write it fully rendered — every template expression resolved to a literal, none surviving. Rendered shape for 2026-03-05, substituting the real date everywhere:
 
 ````markdown
 ---
 title: Daily Plan
 tags:
   - Daily
-DateStarted: 2026-08-03
-DateModified: 2026-08-03
+DateStarted: 2026-03-05
+DateModified: 2026-03-05
 ---
 # Daily Plan
-- Week:: [[2026-W32]]
+- Week:: [[2026-W10]]
 - Next:: 
 ## Tasks
 ### Due
@@ -91,13 +109,13 @@ sort by due
 ### Todo
 ```tasks
 not done
-happens on 2026-08-03 
+happens on 2026-03-05 
 sort by due
 ```
 ### Done
 ```tasks
 done
-(done on 2026-08-03)
+(done on 2026-03-05)
 ```
 
 ## Actions
@@ -107,25 +125,41 @@ done
 
 ```dataview
 TABLE title, DateStarted, status
-WHERE DateStarted = date(2026-08-03)     
+WHERE DateStarted = date(2026-03-05)     
 SORT file.mday DESC
 ```
 ### ✅ Tasks Done
 ```dataview
 TABLE title, DateStarted, status
-WHERE DateDone = date(2026-08-03)     
+WHERE DateDone = date(2026-03-05)     
 SORT file.mday DESC
 ```
 ### 📝Modified Notes
 
 ```dataview
 TABLE title, DateStarted, status
-WHERE file.cday != date(2026-08-03) AND DateModified = date(2026-08-03)
+WHERE file.cday != date(2026-03-05) AND DateModified = date(2026-03-05)
 SORT modified ASC
 ```
 ````
 
 The flywheel writes into `## Actions` (today's plan and checkboxes) and `## Review` (yesterday's close-out, `ToImprove::`). The three Dataview blocks and three Tasks blocks are left untouched — they populate themselves and are the user's built-in progress feedback.
+
+`## Actions` header lines, written before the checkboxes, are the day-level end of the focus cascade:
+
+```markdown
+- 今日产出：<one line>
+- 任务：[[<task file>]]
+- 维度:: `leverage`
+- 目标格:: `<ladder cell>`（`{{OBJECTIVE_FILE}}` 本月焦点第 N 条）
+- 目标文件：[[<objective note>]]（能力底座 [[<capability note>]]）
+- 周/月：[[YYYY-Www]] · [[YYYY-MM]]
+- 时间预算：2 小时（硬上限）
+```
+
+`维度::` and `目标格::` use Dataview inline-field syntax on purpose, so a day can be rolled up by dimension later. They must match the task file's `goalDim` / `goalStep` exactly.
+
+**Files can be truncated by something outside this skill.** Observed once during development: a set of files across both the vault and the skill directory were touched in the same instant and several were left at 0 bytes, including two reference files and two task files. Tracked files were recovered with `git checkout --`; untracked ones were unrecoverable and had to be rewritten. Practical consequence: commit skill edits soon after making them, and treat a 0-byte read of a file you just wrote as external truncation rather than your own error.
 
 **Writing about template syntax inside a vault file.** An article or note that needs to discuss template placeholders cannot contain a bare open-marker, even inside backticks. Observed twice during development: the sequence was silently deleted on one write and auto-closed into an empty pair on the next. The responsible plugin was not isolated — Linter and Templater are both plausible. Refer to it as 占位符 / placeholder in prose rather than reproducing the literal syntax.
 
@@ -151,21 +185,23 @@ reviewed:
 difficulty: 
 comment: 
 draft: true
-wechat: 
-zhihu: 
-juejin: 
-bilibili: 
+# one empty key per name in PUBLISH_SLOTS (local.config.md), e.g.:
+pub_a: 
+pub_b: 
+pub_c: 
 title: cpe-<slug>
 owner: {{OWNER}}
 type: T
 project: CPE
+goalDim: <dimension from 维度字典>
+goalStep: <ladder cell, copied verbatim>
 blockedBy: 
-sprint: 26-08-A
+sprint: 26-03-A
 points: 
 priority: 
-DateStarted: 2026-08-03
+DateStarted: 2026-03-05
 DateDone: 
-DateModified: 2026-08-03
+DateModified: 2026-03-05
 status: 🟡Doing
 PointsDone: ""
 ---
@@ -189,7 +225,9 @@ Field notes:
 - `category` and `project` are matched by the same Dataview queries.
 - `DateStarted` set to today makes the task appear in the daily note's "New Notes" table.
 - `DateDone` set on completion makes it appear in "Tasks Done" and lets the weekly and monthly rollups count it.
-- `wechat` / `zhihu` / `juejin` / `bilibili` are the publish slots. Leave empty until published, then store the URL.
+- Publish URL keys are whatever `PUBLISH_SLOTS` lists in `local.config.md`. Leave each empty until published, then store the URL. Never hardcode slot names into this repository.
+- **`goalDim` is a hard gate.** It must be one of the dimensions the user declared in the `## 维度字典` section of `{{OBJECTIVE_FILE}}` — typically one or two result dimensions plus `leverage` (makes results cheaper or faster) and `capability` (the skill base). This repository does not define the result dimensions; read them from the note. Refuse to create a task file without a valid value.
+- **`goalStep` names the exact ladder cell or month-focus item** it advances, copied verbatim from the objective note. It must contain a number, a date, or a named artifact. A slogan or uncheckable phrase with no number/date/artifact is treated as missing: ask the user which cell, do not invent one.
 
 Section usage: `## Purpose` is why this deliverable is worth today; `## Reference` is the curated learning resources and prior art; `## Actions` is the checkbox plan; `## Outcomes` holds the finished draft; `## Review` holds the critique, the feedback numbers, and the retro.
 
@@ -198,8 +236,8 @@ Section usage: `## Purpose` is why this deliverable is worth today; `## Referenc
 Checkboxes only mean something to the Tasks plugin with its emoji fields. The daily note's Todo block queries `happens on <date>`, which matches start, scheduled, or due — so every action item needs a start date to show up:
 
 ```markdown
-- [ ] 拆解 RAG 分块策略并写成对比表 🛫 2026-08-03
-- [x] 跑通最小 demo 🛫 2026-08-03 ✅ 2026-08-03
+- [ ] 拆解 RAG 分块策略并写成对比表 🛫 2026-03-05
+- [x] 跑通最小 demo 🛫 2026-03-05 ✅ 2026-03-05
 ```
 
 Use `🛫` for start date and `✅` for completion date. Add `📅` for a due date only when the item genuinely has a deadline.
@@ -215,46 +253,66 @@ Private files in the skill directory (gitignored, never committed):
 
 Copy `local.article.config.example.md` to create the real config. Article ship
 refuses to draft if the file or its required keys are missing. Publish URLs
-belong in the task frontmatter `wechat` / `zhihu` / `juejin` / `bilibili` plus a
-short `发布链接` note under `## Outcomes` — that is the single retro surface.
+belong in the task frontmatter keys listed by `PUBLISH_SLOTS`, plus a short
+`发布链接` note under `## Outcomes` — that is the single retro surface.
 
-## Objective file
+## Objective files (two layers)
 
-The big goal, milestones, and skill profile live in one `type: P` file under the existing project tree:
+### North-star objective (`type: O`)
 
-`{{DAILY_VAULT}}\Projects\Scope\TechSkills\AI\ai-agent-flywheel.md`
+The result ladders and the year→month→week focus live here:
 
-It sits beside the area hub notes. Tagging it with the area tag makes it appear in that hub's Sub-projects rollup automatically, whose query accepts both `P` and `O`. It is typed `P` rather than `O` because it has milestones and a finish line.
+`{{DAILY_VAULT}}\{{OBJECTIVE_FILE}}`
 
 ```yaml
 ---
-title: ai-agent-flywheel
-type: P
-project: AI-Agent-Flywheel
-category: TechSkills
-DateDone: 
-DateReviewed: 
-reviewed: 
-difficulty: 
-comment: 
-draft: true
-wechat: 
-zhihu: 
-juejin: 
-bilibili: 
+title: <objective slug>
+type: O
+project: <Project-Name>
+category: <Area>
 tags:
-  - AI
-  - Content-Making
-DateStarted: 2026-08-03
+  - <area tag>
+  - <publishing tag>
+DateStarted: YYYY-MM-DD
 status: 🟡Doing
-DateModified: 2026-08-03
 ---
 ```
 
-This is the only file the flywheel creates outside the daily and task rhythm. It is state, not a new system.
+Required body sections: `## Purpose`, `## 维度字典`, `## 验收口径`, `## Milestones` (one ladder per result dimension), `## This Year`, `## This Month`, `## This Week`, plus a baseline table for whatever counter the ladders are measured in.
+
+The dimensions, their ladder thresholds, the counters, and the accounts or sources behind them are all **defined by the user in this note** and read at runtime. This repository never hardcodes them. When a ladder sums several sources, the note's baseline table is the authoritative list — do not keep a second copy in the config.
+
+`df plan` overwrites `## This Week` on ISO Sunday and `## This Month` on calendar month-end. `## This Year` is set at bootstrap / yearly review; monthly focus must serve it.
+
+### Capability sub-project (`type: P`)
+
+Engineering / flywheel milestones, Skill Profile, Covered Topics, Open Questions:
+
+`{{DAILY_VAULT}}\{{CAPABILITY_FILE}}`
+
+Parent link back to the objective note. No `This Year/Month/Week` here (single source on the O note). Day 7 checkpoint still uses this file's `DateStarted`. When `CAPABILITY_FILE` is blank, keep these sections on the objective note instead of inventing a second file.
+
+These two files are the only project-scope state the flywheel maintains outside the daily and task rhythm.
+
+### Focus cascade (year → month → week → day)
+
+The objective note is the **single source** of focus. Month and week notes carry a mirror, never an independent plan:
+
+| File | Mirror section | Written by |
+|------|----------------|------------|
+| `Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-MM.md` | `## Focus · 本月焦点` + `## 月末分项快照` | `df plan` from `## This Month` |
+| `...\YYYY-Www\YYYY-Www.md` | `## Focus · 本周焦点` + `## 分项快照` | `df plan` from `## This Week` |
+| today's daily note | `## Actions` header lines (`维度::` / `目标格::`) | `df plan` Step 7 |
+
+Rules:
+
+- Month and week notes are created **as soon as they are needed for the mirror**, not only on review day. A mid-month note has an empty `Review` and a filled `Focus`.
+- The mirror table repeats `goalDim` + `goalStep` per row so a day's candidate can be traced upward without opening the objective.
+- If a mirror disagrees with the objective note, the objective wins and the mirror is overwritten. Never edit focus in a mirror only.
+- Fan numbers appear in three places by design: baseline table on the objective, week snapshot, month snapshot. The objective's baseline row is immutable once measured; net growth is always computed against it.
 
 ## Related existing structures
 
-- A content-publishing objective note under `Projects/Scope/`, typed `O`, that daily deliverables link to and roll up under.
+- Older project or publishing notes under `Projects/Scope/` may still exist; flywheel planning reads `{{OBJECTIVE_FILE}}` + `{{CAPABILITY_FILE}}` only.
 - `Kanban/kb-tasks.md` — the board. Adding a task file does not add it to the board; the user drags it there, or the skill appends a link under the matching column when asked.
-- The third-party `baoyu-post-to-wechat` skill provides the markdown-to-WeChat converter used by `ship`. If it is not installed, `ship` falls back to plain markdown export.
+- Per-channel export converters and paste targets live in `local.article.config.md` under `publish_export` (gitignored). `ship` reads that block; this repository does not name any channel or converter.

@@ -65,7 +65,11 @@ ln -s <你克隆的路径>/daily-flywheel ~/.cursor/skills/daily-flywheel
 copy local.config.example.md local.config.md
 ```
 
-打开 `local.config.md` 填四个键：`ROOT_DIR`、`DAILY_VAULT`、`NOTES_VAULT`、`OWNER`。这个文件已在 `.gitignore` 里，不会被提交。
+打开 `local.config.md` 填这些键：`ROOT_DIR`、`DAILY_VAULT`、`NOTES_VAULT`、`OWNER`，以及 `OBJECTIVE_FILE`（大目标笔记路径）、`CAPABILITY_FILE`（能力子工程，可留空）、`PUBLISH_SLOTS`（任务 frontmatter 里存发布链接的字段名）。可选：`EXTRA_ARCHETYPES`（只给自己用的候选类型，不进开源文档）。这个文件已在 `.gitignore` 里，不会被提交。
+
+**配置只放位置、字段名和可选私有候选类型，不放目标内容。** 你到底在追什么、怎么衡量、门槛定在哪、涉及哪些账号与数字，全部只写在 vault 里的那篇大目标笔记，技能运行时去读。各渠道怎么导出写在 `local.article.config.md` 的 `publish_export`，也不进仓库。这样即使贴配置求助、录屏、或误用 `git add -f`，也带不出目标本身。
+
+`references/` 里的例子全是编造的占位值，不要替换成自己的真实数据 —— 否则 fork 或提 PR 时会一起带出去。
 
 技能读不到配置会直接停下来提示你，不会去猜路径 —— 猜错会把文件写进错误的 vault。
 

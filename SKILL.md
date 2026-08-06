@@ -13,26 +13,30 @@ description: >-
 
 This skill assumes the user already owns a working Obsidian setup: Templater daily notes, the Tasks plugin, Dataview rollups, a Kanban board, and a `type` based project tree. That kind of system is very good at recording and completely silent on deciding. It is common for one to be built carefully and then abandoned within months.
 
-The stall it is built to fix, in the words of the person it was built for:
+The stall it is built to fix has four symptoms: no way to slice a big goal into something finishable today, no way to size that to the hours actually available, no confidence about what a deliverable could even be, and no feedback after months of study. Three are decomposition problems and the fourth is a feedback problem. None is a recording problem.
 
-> 不知道怎么基于当前大目标切分成每天都能有成果产出的行动计划以及匹配当日学习时间的待办，不确定能有哪些学习成果产出，学了很久得不到反馈没有动力
-
-Three of those four symptoms are decomposition problems and the fourth is a feedback problem. None of them is a recording problem. So this skill supplies exactly two things: **decision** (what to produce today, sized to today) and **feedback** (a real critique the same day, not dependent on an audience). Everything else reuses what already exists.
+So this skill supplies exactly two things: **decision** (what to produce today, sized to today) and **feedback** (a real critique the same day, not dependent on an audience). Everything else reuses what already exists.
 
 ## Configuration — read this before anything else
 
-Every path in this skill is a placeholder. Resolve them by reading `local.config.md` in this skill's own directory:
+Every path, goal filename, and platform name in this skill is a placeholder. Resolve them by reading `local.config.md` in this skill's own directory:
 
 | Key | Meaning |
 |-----|---------|
 | `ROOT_DIR` | Parent directory shared by the vaults, used to expand the two below |
 | `DAILY_VAULT` | Vault holding daily notes, tasks, and projects. Everything this skill writes goes here. Defaults to `{{ROOT_DIR}}/Daily` |
-| `NOTES_VAULT` | Optional second vault of existing notes, read-only, used only for dedup. Defaults to `{{ROOT_DIR}}/TechSkills/full-stack` |
+| `NOTES_VAULT` | Optional second vault of existing notes, read-only, used only for dedup. Defaults to `{{ROOT_DIR}}/Notes` |
 | `OWNER` | Value written into the `owner` frontmatter field |
+| `OBJECTIVE_FILE` | Path, relative to `DAILY_VAULT`, of the north-star objective note holding the goal, its milestones, and the year/month/week focus |
+| `CAPABILITY_FILE` | Optional path of the capability sub-project note (skill profile, engineering milestones). Blank keeps everything on `OBJECTIVE_FILE` |
+| `PUBLISH_SLOTS` | Comma-separated frontmatter keys that store publish URLs on task / article notes |
+| `EXTRA_ARCHETYPES` | Optional private rows for the `df plan` candidate table; leave blank to skip |
 
 If `local.config.md` does not exist, stop and tell the user to copy `local.config.example.md` to `local.config.md` and fill it in. Do not guess a vault path, and do not proceed with placeholders unresolved — writing to a guessed path scatters files into the wrong vault.
 
 If `NOTES_VAULT` is absent or points nowhere, skip dedup scanning rather than failing.
+
+`local.config.md` holds **locations, publish-slot key names, and optional private archetypes**. The goal itself — its dimensions, thresholds, baseline numbers, and the accounts involved — lives in the objective note inside the vault and is read from there at runtime. Per-channel export steps live in `local.article.config.md` under `publish_export`. **Never copy goal content or channel-specific tactics into this repository**, not even into passing prose or an example. When a reference file needs an example, it uses a placeholder or an obviously invented value.
 
 ### Article config (ship only)
 
@@ -50,8 +54,8 @@ Always read `references/conventions.md` first — it holds every path, schema, a
 
 | Trigger | Mode | Reference |
 |---------|------|-----------|
-| `df init`, first ever run, or the objective file is missing | Bootstrap the big goal, milestones, skill profile | `references/init.md` |
-| `df plan`, morning, "今天做什么" | Yesterday's close-out + today's deliverable + action plan | `references/plan.md` |
+| `df init`, first ever run, or `{{OBJECTIVE_FILE}}` is missing | Bootstrap north-star + capability sub-project | `references/init.md` |
+| `df plan`, morning, "今天做什么" | Review yesterday + sync publish links; on ISO Sunday / month-end run week/month review+plan; daily candidates aligned to the objective's This Year/Month/Week and its result ladders | `references/plan.md` |
 | `df ship`, evening, "写出来", "收工" | Action status + configured draft (dual-write) + critique + illustrate + calibrate + publish links | `references/ship.md` |
 
 If the mode is ambiguous, check whether today's daily note already has a filled `## Actions` section: empty means `plan`, filled means `ship`.

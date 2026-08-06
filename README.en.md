@@ -64,7 +64,11 @@ ln -s <your clone path>/daily-flywheel ~/.cursor/skills/daily-flywheel
 cp local.config.example.md local.config.md
 ```
 
-Fill in four keys: `ROOT_DIR`, `DAILY_VAULT`, `NOTES_VAULT`, `OWNER`. The file is gitignored.
+Fill in `ROOT_DIR`, `DAILY_VAULT`, `NOTES_VAULT`, `OWNER`, plus `OBJECTIVE_FILE` (path to your north-star note), `CAPABILITY_FILE` (optional sub-project), and `PUBLISH_SLOTS` (frontmatter keys that store publish URLs). Optional: `EXTRA_ARCHETYPES` (private candidate rows that never enter the open docs). The file is gitignored.
+
+**The config holds locations, slot key names, and optional private archetypes — not goal content.** What you are aiming at, how you measure it, where the thresholds sit, and any accounts or numbers involved live only in the objective note inside your vault, which the skill reads at runtime. Per-channel export steps live in `local.article.config.md` under `publish_export`. So a pasted config, a screen-share, or an accidental `git add -f` cannot leak the goal itself.
+
+Examples under `references/` are invented placeholders on purpose; do not replace them with your own values, or a fork or PR will carry them out.
 
 If the config is missing the skill stops and tells you, rather than guessing a vault path — a wrong guess scatters files into the wrong vault.
 
