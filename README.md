@@ -10,7 +10,7 @@
 
 Daily Flywheel 是一个 Cursor Agent Skill。你告诉它大目标和今天能投入多久，它会给出当天做得完的产出候选；你选定一个，晚上它再把当天工作推进成成稿、点评、配图和发布回写。**所有状态继续留在你自己的 Obsidian vault，不迁移数据，也不新建一套平行系统。**
 
-![Daily Flywheel：从长期目标、每日计划和今日产出，到成稿发布与反馈校准的 Obsidian AI 工作流](https://files.mdnice.com/user/41327/bbcd45e1-29d6-4d34-b9c0-66c7b5b4daaf.jpg)
+![](https://files.mdnice.com/user/41327/bbcd45e1-29d6-4d34-b9c0-66c7b5b4daaf.jpg)
 
 ## 三条命令，跑起每日产出飞轮
 
