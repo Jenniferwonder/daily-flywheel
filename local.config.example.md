@@ -24,6 +24,11 @@ NOTES_VAULT: D:\YourFolder\Notes
 # Written into the `owner` frontmatter field of generated task files.
 OWNER: YourName
 
+# UI + vault prose language for agent chat and generated note prose: zh | en
+# Default zh. Vault schema keys (## Actions, ## Review, frontmatter names) stay fixed.
+# Article/script draft language can override via local.article.config `draft_language`.
+LANGUAGE: zh
+
 # North-star objective note: your goal, its checkable milestones, and the
 # rolling This Year / This Month / This Week focus.
 # Path relative to DAILY_VAULT. Created by `df init` if missing. Required.
@@ -43,6 +48,15 @@ PUBLISH_SLOTS: pub_a, pub_b, pub_c
 # Leave blank (or omit) to skip. Put personal / channel-specific tactics here
 # so they never enter the open repository.
 EXTRA_ARCHETYPES: |
+
+# Optional. Aliyun OSS image upload for `scripts/oss_upload_images.py` and df final.
+# Leave blank to skip automated image hosting. Never commit real secrets.
+OSS_ENDPOINT: oss-cn-example.aliyuncs.com
+OSS_BUCKET: your-bucket
+OSS_PREFIX: articles/
+OSS_ACCESS_KEY_ID: ""
+OSS_ACCESS_KEY_SECRET: ""
+OSS_PUBLIC_BASE: https://your-bucket.oss-cn-example.aliyuncs.com
 ```
 
 ## Notes

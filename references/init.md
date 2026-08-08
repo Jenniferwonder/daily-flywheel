@@ -8,6 +8,8 @@ If `local.config.md` has no `OBJECTIVE_FILE`, ask for the path and tell the user
 
 ## Step 1 — Make the goal judgeable
 
+Resolve `LANGUAGE` from `local.config.md` and use `references/i18n.md` for chat. Interview prose follows `LANGUAGE`; vault section titles for new objective notes may use the user's existing language conventions (many zh vaults keep `## 维度字典` etc. — match what `conventions.md` / the user's templates already use rather than inventing a second schema).
+
 Ask the user for their big goal. Most people state something shaped like this invented example:
 
 > 精通某个技术方向的工程实践，每天输出学习成果，尽快拿到可核对的结果
@@ -119,10 +121,14 @@ Required sections:
 ## This Week
 
 ## 级联规则
-<objective is the single focus source; df plan pushes mirrors down; tasks need goalDim + goalStep>
+<objective is the single focus source; df plan pushes mirrors down; df review may amend This Week after confirmation; tasks need goalDim + goalStep + deliverable>
 
 ## Baseline · 分项快照
 | 来源 | 计数 | 更新日期 | 备注 |
+
+## Latest Snapshot
+| 来源 | 计数 | 更新日期 | 备注 |
+<same shape as Baseline; df review overwrites with absolute counters; net change vs Baseline; never copy real rows into the skill repo>
 
 ## Sub-projects
 ## Actions

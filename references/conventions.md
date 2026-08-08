@@ -6,6 +6,17 @@ This file is the structural contract between the skill and the vault. It describ
 
 Paths below use the placeholders resolved from `local.config.md`: `{{DAILY_VAULT}}`, `{{NOTES_VAULT}}`, `{{OWNER}}`.
 
+## Language
+
+| Key | Where | Role |
+|-----|-------|------|
+| `LANGUAGE` | `local.config.md` | `zh` \| `en` — chat + generated **prose** (default `zh`) |
+| `draft_language` | `local.article.config.md` | Article/script body language; default = `LANGUAGE` |
+
+User-facing prompt catalog: `references/i18n.md`.
+
+**Not localized** (schema stability / Dataview / Tasks): `## Actions`, `## Review`, `## Outcomes`, `ToImprove::`, `维度::`, `目标格::`, frontmatter key names, Tasks emoji dates, and fixed path footnotes like `终稿路径` / `配图目录` when already used in the vault. If `LANGUAGE=en`, agents may add an English gloss in chat but must keep those keys in files.
+
 ## The two vaults
 
 | Vault | Placeholder | Role |
@@ -22,9 +33,10 @@ Never substitute a broader scan. On a cloud-synced or network drive a depth-2 re
 # Point this at the topic subtree you actually write about, not the vault root.
 Get-ChildItem -LiteralPath "{{NOTES_VAULT}}\ai" -Recurse -Filter *.md -Name
 
-# Yesterday's publishable articles only (for df plan Step 0 link sync). Shallow.
+# Yesterday's publishable articles / scripts (for df review link sync). Shallow.
 Get-ChildItem -LiteralPath "{{NOTES_VAULT}}\ai\insights-to-share" -Directory -Filter "pub-*" -Name
-# Then read frontmatter of the matched pub-*/pub-*.md — not the body.
+Get-ChildItem -LiteralPath "{{NOTES_VAULT}}\ai\insights-to-share" -Directory -Filter "script-*" -Name
+# Then read frontmatter of the matched */*.md — not the body.
 
 # Existing and finished tasks (flat, fast)
 Get-ChildItem -LiteralPath "{{DAILY_VAULT}}\Tasks\New\Backlog" -Filter *.md -Name
@@ -41,7 +53,7 @@ Week folder placement: ISO week, hung under the month that contains that week's 
 Weekly review note: `Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-Www\YYYY-Www.md`  
 Monthly review note: `Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-MM.md`  
 Templates: `Templates\Tp-Daily\tp-Weekly.md`, `Templates\Tp-Daily\tp-Monthly.md`  
-`df plan` creates/fills these on ISO Sunday / calendar month-end (see `plan.md` Step 0b). Agent-written reviews must be fully rendered — no Templater markers.
+`df plan` creates/fills these on ISO Sunday / calendar month-end (see `plan.md` Step 0b). Agent-written week/month notes must be fully rendered — no Templater markers. Daily close-out is `df review` (task SSOT), not `df plan`.
 
 Filenames only. Do not read note bodies from the Notes vault; titles plus the dedup list are enough to tell whether a topic is already covered.
 
@@ -120,7 +132,15 @@ done
 
 ## Actions
 ## Review
-- ToImprove::  
+_复盘正文、反馈数字、ToImprove 写在当日主任务 `## Review`（`df review`）。本区只做聚合。_
+
+```dataview
+TABLE reviewed, commented, deliverable, status, goalDim, goalStep
+FROM "Tasks/New"
+WHERE DateStarted = date(2026-03-05) OR DateDone = date(2026-03-05)
+SORT file.mday DESC
+```
+
 ### ✍️New Notes
 
 ```dataview
@@ -143,7 +163,7 @@ SORT modified ASC
 ```
 ````
 
-The flywheel writes into `## Actions` (today's plan and checkboxes) and `## Review` (yesterday's close-out, `ToImprove::`). The three Dataview blocks and three Tasks blocks are left untouched — they populate themselves and are the user's built-in progress feedback.
+The flywheel writes into `## Actions` (today's plan and checkboxes). `## Review` is **Dataview-first**: `df review` does not copy prose into the daily note. Keep the Tasks query blocks; they populate themselves.
 
 `## Actions` header lines, written before the checkboxes, are the day-level end of the focus cascade:
 
@@ -182,6 +202,7 @@ tags:
   - Content-Making
 DateReviewed: 
 reviewed: 
+commented: 
 difficulty: 
 comment: 
 draft: true
@@ -195,6 +216,7 @@ type: T
 project: CPE
 goalDim: <dimension from 维度字典>
 goalStep: <ladder cell, copied verbatim>
+deliverable: article
 blockedBy: 
 sprint: 26-03-A
 points: 
@@ -228,8 +250,11 @@ Field notes:
 - Publish URL keys are whatever `PUBLISH_SLOTS` lists in `local.config.md`. Leave each empty until published, then store the URL. Never hardcode slot names into this repository.
 - **`goalDim` is a hard gate.** It must be one of the dimensions the user declared in the `## 维度字典` section of `{{OBJECTIVE_FILE}}` — typically one or two result dimensions plus `leverage` (makes results cheaper or faster) and `capability` (the skill base). This repository does not define the result dimensions; read them from the note. Refuse to create a task file without a valid value.
 - **`goalStep` names the exact ladder cell or month-focus item** it advances, copied verbatim from the objective note. It must contain a number, a date, or a named artifact. A slogan or uncheckable phrase with no number/date/artifact is treated as missing: ask the user which cell, do not invent one.
+- **`deliverable`**: `article` | `script` | `other`. Set by `df plan`. Drives whether `df final` illustrates (`article`) or skips images (`script`). Prefer `article`/`script` every day.
+- **`reviewed`**: date string set by `df review` when yesterday's close-out is written. Empty → `df plan` hard-stops. Value is the day review ran.
+- **`commented`**: date string set by a successful `df comment`. Optional; does not gate `df final`.
 
-Section usage: `## Purpose` is why this deliverable is worth today; `## Reference` is the curated learning resources and prior art; `## Actions` is the checkbox plan; `## Outcomes` holds the finished draft; `## Review` holds the critique, the feedback numbers, and the retro.
+Section usage: `## Purpose` is why this deliverable is worth today; `## Reference` is the curated learning resources and prior art; `## Actions` is the checkbox plan; `## Outcomes` holds the frozen v1 draft (+ path footnotes); `## Review` is the **SSOT** for feedback numbers, completion retro, and `ToImprove::` (written by `df review`; critique pointer may be appended by `df comment`).
 
 ## Tasks plugin syntax
 
@@ -242,19 +267,19 @@ Checkboxes only mean something to the Tasks plugin with its emoji fields. The da
 
 Use `🛫` for start date and `✅` for completion date. Add `📅` for a due date only when the item genuinely has a deadline.
 
-## Article config (ship)
+## Article config (ship + final)
 
 Private files in the skill directory (gitignored, never committed):
 
 | File | Role |
 |------|------|
-| `local.article.config.md` | Style, audience, export paths, illustration budget for `df ship` |
-| `local.article.memory.md` | ≤7 recent executable rewrite rules learned from v1→final diffs |
+| `local.article.config.md` | Style, audience, export paths, illustration budget for `df ship` / `df final` |
+| `local.article.memory.md` | ≤7 recent executable rewrite rules learned from v1→final diffs (`df final`) |
 
-Copy `local.article.config.example.md` to create the real config. Article ship
-refuses to draft if the file or its required keys are missing. Publish URLs
-belong in the task frontmatter keys listed by `PUBLISH_SLOTS`, plus a short
-`发布链接` note under `## Outcomes` — that is the single retro surface.
+Copy `local.article.config.example.md` to create the real config. Article ship/final
+refuse if the file or its required keys are missing. Publish URLs belong in the
+task frontmatter keys listed by `PUBLISH_SLOTS`, synced by `df review` from article
+YAML — never hardcode real URLs into this repository.
 
 ## Objective files (two layers)
 
@@ -278,11 +303,11 @@ status: 🟡Doing
 ---
 ```
 
-Required body sections: `## Purpose`, `## 维度字典`, `## 验收口径`, `## Milestones` (one ladder per result dimension), `## This Year`, `## This Month`, `## This Week`, plus a baseline table for whatever counter the ladders are measured in.
+Required body sections: `## Purpose`, `## 维度字典`, `## 验收口径`, `## Milestones` (one ladder per result dimension), `## This Year`, `## This Month`, `## This Week`, an immutable **Baseline** table, and a rolling **`## Latest Snapshot`** table (same shape as Baseline; overwritten by `df review`).
 
-The dimensions, their ladder thresholds, the counters, and the accounts or sources behind them are all **defined by the user in this note** and read at runtime. This repository never hardcodes them. When a ladder sums several sources, the note's baseline table is the authoritative list — do not keep a second copy in the config.
+The dimensions, their ladder thresholds, the counters, and the accounts or sources behind them are all **defined by the user in this note** and read at runtime. This repository never hardcodes them. When a ladder sums several sources, the note's baseline table is the authoritative list — do not keep a second copy in the config or in skill reference files.
 
-`df plan` overwrites `## This Week` on ISO Sunday and `## This Month` on calendar month-end. `## This Year` is set at bootstrap / yearly review; monthly focus must serve it.
+`df plan` overwrites `## This Week` on ISO Sunday and `## This Month` on calendar month-end. `df review` may also amend `## This Week` (and rarely `## This Month`) after an explicit user confirmation on an optimization candidate. `## This Year` is set at bootstrap / yearly review only. `df review` auto-checks ladder boxes when Latest Snapshot meets a cell's threshold as written in the note.
 
 ### Capability sub-project (`type: P`)
 
@@ -309,10 +334,11 @@ Rules:
 - Month and week notes are created **as soon as they are needed for the mirror**, not only on review day. A mid-month note has an empty `Review` and a filled `Focus`.
 - The mirror table repeats `goalDim` + `goalStep` per row so a day's candidate can be traced upward without opening the objective.
 - If a mirror disagrees with the objective note, the objective wins and the mirror is overwritten. Never edit focus in a mirror only.
-- Fan numbers appear in three places by design: baseline table on the objective, week snapshot, month snapshot. The objective's baseline row is immutable once measured; net growth is always computed against it.
+- Counters appear in: immutable Baseline on the objective, rolling `## Latest Snapshot` on the objective (daily via `df review`), plus week/month snapshot mirrors. Net growth is always computed against Baseline. Never paste real totals into this repository.
+- Mode map: `df review` (yesterday SSOT on task + Snapshot/ladders) → `df plan` (today) → `df ship` (v1 draft) → optional `df comment` → `df final` (images/calibrate/handoff).
 
 ## Related existing structures
 
 - Older project or publishing notes under `Projects/Scope/` may still exist; flywheel planning reads `{{OBJECTIVE_FILE}}` + `{{CAPABILITY_FILE}}` only.
 - `Kanban/kb-tasks.md` — the board. Adding a task file does not add it to the board; the user drags it there, or the skill appends a link under the matching column when asked.
-- Per-channel export converters and paste targets live in `local.article.config.md` under `publish_export` (gitignored). `ship` reads that block; this repository does not name any channel or converter.
+- Per-channel export converters and paste targets live in `local.article.config.md` under `publish_export` (gitignored). `df final` reads that block for handoff; this repository does not name any channel or converter.

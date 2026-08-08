@@ -3,7 +3,7 @@
 Copy this file to `local.article.config.md` in the same directory and fill it in.
 `local.article.config.md` is gitignored and never committed.
 
-`df ship` reads this file before writing any article. If it is missing, or required
+`df ship` and `df final` read this file for articles. If it is missing, or required
 keys below are empty, ship refuses to draft and asks you to finish setup first.
 
 Required keys: `audience`, `export_dir`, `export_slug_pattern`.
@@ -19,6 +19,10 @@ style_path:
 
 # Inline style notes. Used when style_path is empty.
 style: |
+
+# Draft body language for articles/scripts: zh | en
+# Default: same as LANGUAGE in local.config.md
+draft_language: 
 
 # Who reads this, what they already know, what they should leave with. Required.
 audience: 
@@ -39,7 +43,7 @@ max_inline_images: 4
 illustrate_confirm: false          # ship passes skip-confirm to the illustrator skills when false
 illustrate_timebox_min: 45         # on timeout: drop inline images first, keep cover
 
-# Per-slot export / handoff for df ship Step 6.
+# Per-slot export / handoff for df final.
 # Keys must match PUBLISH_SLOTS in local.config.md.
 # Put converter commands and paste targets here — not in the open references.
 publish_export: |
