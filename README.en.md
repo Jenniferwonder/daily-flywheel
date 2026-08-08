@@ -8,15 +8,18 @@
 
 You already have daily notes, tasks, projects, and a knowledge base — yet every morning still starts with “What should I learn, make, or write today?” The missing piece is not another recording tool. It is a loop from **long-term goal → today's action → published result → feedback**.
 
-Daily Flywheel is a Cursor Agent Skill. Give it your goal and today's available hours; it proposes deliverables that fit. Pick one, and that evening it helps turn the work into a draft, critique, illustrations, and publish-link sync. **Everything remains ordinary markdown in your own Obsidian vault — no migration and no parallel system.**
+Daily Flywheel is a Cursor Agent Skill. Give it your goal and today's available hours; it proposes finishable **article/script** candidates. Pick one, ship a v1 draft, hand-edit, optionally critique, then finalize (illustrate / calibrate / hand off). **Everything remains ordinary markdown in your own Obsidian vault — no migration and no parallel system.**
 
-## Three commands to run the flywheel
+## Six commands to run the flywheel
 
 | Phase | Input | What you get |
 |-------|-------|--------------|
 | `df init` | Your long-term goal and current capabilities | Verifiable result ladders, capability milestones, and a topic baseline |
-| `df plan` | The hours you actually have today | 3–5 finishable candidates plus a plan written into the daily note and task file |
-| `df ship` | What you actually completed | Draft, first-reader critique, illustrations, editing rules, and publish-link sync |
+| `df review` | Yesterday's work + current counters | Task retro + `reviewed`, objective Snapshot/ladder ticks; optional week-focus tweak |
+| `df plan` | Today's hours (requires yesterday `reviewed`) | 3–5 article/script candidates written into daily + task |
+| `df ship` | What you actually completed | Frozen v1 + editable export draft (no critique/images) |
+| `df comment` | Hand-edited final (optional) | Four-line critique; stamps `commented` |
+| `df final` | Confirmed final draft | Article: images + OSS + calibrate + handoff; script: skip images |
 
 ## Install now
 
@@ -33,20 +36,21 @@ Then copy the two example configs, fill in your vault paths and article preferen
 - **Go all the way from plan to publish.** It handles the draft, critique, illustrations, publish-link sync, and later feedback collection — not just a to-do list.
 - **Make later drafts sound more like you.** Differences between the first and final drafts become private editing rules, reducing repeated manual fixes over time.
 - **Keep real goals and channel setup local.** Goals, numbers, accounts, and export steps never enter the open repository.
+- **Bilingual UI.** Set `LANGUAGE: zh` or `en` in `local.config.md`; chat and generated prose follow it. Vault schema keys stay stable (see `references/i18n.md`).
 
 ## Features at a glance
 
 | Feature | What it does | Where it lands |
 |---------|--------------|----------------|
-| Today's decision | Given your big goal and the hours you actually have, 3–5 candidate deliverables you can finish today, each labelled with type, difficulty, value, estimated time, and why today | Today's daily note `## Actions` + the task file it creates |
-| Goal cascade | Year → month → week → day pushed down from a single source; weekly and monthly notes only mirror it. A task that can't name which rung of the goal it moves doesn't get created | Objective note / monthly / weekly notes |
-| Dual-write draft | Writes the first draft from your private article config: v1 frozen in the task file, the export path holding the copy you actually edit | Task `## Outcomes` + export directory |
-| First-reader critique | Critiques the draft the moment it's done. No score, no encouragement | Task `## Review` |
-| Timeboxed illustration | Cover and inline images within a fixed budget; on timeout it drops inline images and keeps the cover | Article `imgs/` directory |
-| Edit calibration | Diffs v1 against the version you hand-edited, distills ≤5 actionable rewrite rules and keeps them rolling, so later drafts need less fixing | `local.article.memory.md` |
-| Publish sync | Publish URLs written back to task frontmatter; engagement collected in one place next morning. Recorded but not analyzed for the first 7 days | Task frontmatter + daily note |
-| Topic dedup | Builds a "what I've already written" baseline from filenames and frontmatter only, and stops recommending it | Capability note Covered Topics |
-| Skill profile | 1–2 evidence-based capability questions a day; answers recalibrate levels, and later candidates target the gaps | Capability note Skill Profile |
+| Yesterday review | Sync links, capture counters/feedback, task Review, Snapshot + auto ladder ticks; propose focus tweaks when triggered | Task + objective note (vault only) |
+| Today's decision | From the **latest** objective + hours, 3–5 article/script candidates | Daily `## Actions` + task file |
+| Goal cascade | Year → month → week → day; tasks need `goalDim` / `goalStep` / `deliverable` | Objective / month / week notes |
+| Dual-write draft | `df ship`: freeze v1 in the task; export path for hand-edits | Task `## Outcomes` + export dir |
+| First-reader critique | Optional `df comment` after confirming final; stamps `commented` | Chat + task frontmatter |
+| Finalize | `df final`: images/OSS/calibrate/handoff (scripts skip images) | Export draft + `local.article.memory.md` |
+| Daily aggregation | Review section Dataviews task fields — no multi-write | Daily template |
+| Topic dedup | Filenames + frontmatter only | Capability Covered Topics |
+| Skill profile | 1–2 evidence-based questions a day | Capability Skill Profile |
 
 ## How to use it
 
@@ -56,21 +60,31 @@ Translates a vague goal into something verifiable: countable result ladders go o
 
 It writes files against the folder layout and frontmatter schema described in [`references/conventions.md`](./references/conventions.md). **If your vault is organised differently, edit `conventions.md` before running `df init`.**
 
-### `df plan` — every morning
+### `df review` — first each morning
 
 ```
-yesterday's close-out -> review -> today's candidates -> you pick -> write into daily note and task file
+sync publish URLs -> capture counters/feedback -> task Review + reviewed -> Snapshot/ladders -> (if triggered) confirm week-focus edit
 ```
 
-All questions arrive in one numbered block and you answer once. On ISO Sunday and at month-end it also runs the weekly / monthly review and writes the focus back. The hours you report are a **hard ceiling** — anything estimated above them never reaches the candidate table.
+Real goal numbers stay in your vault objective note — never in the open skill repo.
 
-### `df ship` — every evening
+### `df plan` — after review
 
 ```
-action status -> dual-write draft -> first-reader critique -> timeboxed illustration -> calibrate edit rules -> publish links
+require reviewed -> (Sunday/month-end gates) -> read latest objective -> candidates -> write daily + task
 ```
 
-Without `local.article.config.md` it refuses to draft, rather than degrading into an unconstrained draft you then rescue by hand.
+Hard-stops if yesterday is not `reviewed`. Hours are a **hard ceiling**. Defaults to article/script days.
+
+### `df ship` → hand-edit → (optional) `df comment` → `df final`
+
+```
+ship: checkboxes + dual-write v1/export draft
+comment: confirm final → four-line critique → commented date
+final: confirm final → images+OSS (articles) → calibrate → publish handoff
+```
+
+Without `local.article.config.md`, article ship/final refuse rather than drafting unconstrained prose.
 
 ## Requirements
 
@@ -106,12 +120,13 @@ cp local.config.example.md local.config.md
 | `DAILY_VAULT` | Vault holding daily notes, tasks, and projects. Everything the skill writes goes here. Required |
 | `NOTES_VAULT` | Optional second vault of existing notes, read-only, used only for topic dedup. Blank skips dedup |
 | `OWNER` | Value written into the `owner` frontmatter field of generated task files |
+| `LANGUAGE` | Chat + generated prose: `zh` \| `en` (default `zh`); strings in `references/i18n.md` |
 | `OBJECTIVE_FILE` | Path of the north-star objective note, relative to `DAILY_VAULT`. Created by `df init` if missing. Required |
 | `CAPABILITY_FILE` | Path of the capability sub-project note; blank keeps the profile and milestones on the objective note |
 | `PUBLISH_SLOTS` | Frontmatter keys that store publish URLs, comma-separated, in the order you want to be asked |
 | `EXTRA_ARCHETYPES` | Optional private candidate rows that never enter the open docs |
 
-**3. Fill in the article config** (only `df ship` needs it)
+**3. Fill in the article config** (`df ship` / `df final` need it)
 
 ```bash
 cp local.article.config.example.md local.article.config.md

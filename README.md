@@ -8,17 +8,20 @@
 
 你已经有日记、任务、项目和知识库，却还是每天纠结「今天学什么、做什么、写什么」？问题不在记录工具，而在缺少从**长期目标 → 今日行动 → 成果发布 → 反馈改进**的完整闭环。
 
-Daily Flywheel 是一个 Cursor Agent Skill。你告诉它大目标和今天能投入多久，它会给出当天做得完的产出候选；你选定一个，晚上它再把当天工作推进成成稿、点评、配图和发布回写。**所有状态继续留在你自己的 Obsidian vault，不迁移数据，也不新建一套平行系统。**
+Daily Flywheel 是一个 Cursor Agent Skill。你告诉它大目标和今天能投入多久，它会给出当天做得完的内容产出候选；你选定一个，晚上先出初稿，手改后再可选点评、定稿配图与校准。**所有状态继续留在你自己的 Obsidian vault，不迁移数据，也不新建一套平行系统。**
 
 ![Daily Flywheel：从长期目标、每日计划和今日产出，到成稿发布与反馈校准的 Obsidian AI 工作流](https://files.mdnice.com/user/41327/bbcd45e1-29d6-4d34-b9c0-66c7b5b4daaf.jpg)
 
-## 三条命令，跑起每日产出飞轮
+## 六条命令，跑起每日产出飞轮
 
 | 阶段 | 输入 | 得到什么 |
 |------|------|----------|
 | `df init` | 你的长期目标与现有能力 | 可验收的结果阶梯、能力里程碑和选题基线 |
-| `df plan` | 今天可支配的时间 | 3–5 个做得完的候选，以及写入日记和任务文件的今日计划 |
-| `df ship` | 今天实际完成的工作 | 成稿、第一读者点评、配图、改稿规则和发布链接回写 |
+| `df review` | 昨日行动与各平台当前计数 | 任务复盘、`reviewed` 戳记、大目标 Snapshot/阶梯勾选；可选周焦点微调 |
+| `df plan` | 今天可支配的时间（须已 `df review`） | 3–5 个做得完的 **文章/脚本** 候选，写入日记和任务 |
+| `df ship` | 今天实际完成的工作 | 冻结 v1 + 导出路径待改稿（不点评、不配图） |
+| `df comment` | 手改后的终稿（可选） | 四行第一读者点评；任务写入 `commented` 日期 |
+| `df final` | 确认终稿 | 文章：配图+图床回贴+校准+发布交接；脚本：跳过配图 |
 
 ## 立即安装
 
@@ -35,20 +38,21 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 - **从计划一直走到发布。** 它不止列待办，还负责成稿、点评、配图、发布链接回写与后续反馈收集。
 - **越用越贴近你的写法。** 首稿与终稿的差异会沉淀为私有改稿规则，后续草稿逐步减少重复手改。
 - **真实目标和渠道配置只留本地。** 目标、数字、账号与导出步骤不会写进开源仓库。
+- **中英双语 UI。** 在 `local.config.md` 设 `LANGUAGE: zh` 或 `en`；对话与生成散文跟偏好走，vault 结构字段保持稳定（见 `references/i18n.md`）。
 
 ## 功能一览
 
 | 功能 | 做什么 | 写到哪 |
 |------|--------|--------|
-| 今日决策 | 按大目标和当天可支配时间，给 3–5 个当天做得完的产出候选，每个标注类型、难度、价值、预期耗时、以及为什么是今天 | 今日日记 `## Actions` + 新建的任务文件 |
-| 目标级联 | 年 → 月 → 周 → 日单源下推，月记周记只做镜像；任务讲不清对应大目标哪一格就不给建 | 大目标笔记 / 月记 / 周记 |
-| 成稿双写 | 按你的私有文章配置写首稿：任务文件冻结 v1，导出路径存你后续要手改的那份 | 任务 `## Outcomes` + 导出目录 |
-| 第一读者点评 | 成稿写完当场以第一读者身份点评。不打分、不鼓励 | 任务 `## Review` |
-| 时间盒配图 | 封面与插图在限定时间内出，超时先砍插图保封面 | 文章 `imgs/` 目录 |
-| 改稿校准 | diff 首稿与你手改后的终稿，提炼 ≤5 条可执行改写规则并滚动更新，首稿越写越少要改 | `local.article.memory.md` |
-| 发布回写 | 发布链接写回任务 frontmatter，第二天早上统一收反馈数据；前 7 天只记不分析 | 任务 frontmatter + 日记 |
-| 选题去重 | 只读文件名和 frontmatter 建立「已经写过什么」的基线，不再重复推荐 | 能力笔记 Covered Topics |
-| 能力画像 | 每天补 1–2 个带证据的能力问题，答完校准等级，后续候选按画像的缺口来挑 | 能力笔记 Skill Profile |
+| 昨日复盘 | 收链接与反馈、写任务 Review、刷新 Snapshot、自动勾阶梯；触发时提议优化方向 | 任务 + 大目标笔记（vault 内） |
+| 今日决策 | 按**最新**大目标与当天时间，给 3–5 个文章/脚本候选 | 今日日记 `## Actions` + 任务文件 |
+| 目标级联 | 年 → 月 → 周 → 日单源下推；任务须带 `goalDim` / `goalStep` / `deliverable` | 大目标笔记 / 月记 / 周记 |
+| 成稿双写 | `df ship`：任务冻结 v1，导出路径供手改 | 任务 `## Outcomes` + 导出目录 |
+| 第一读者点评 | 可选 `df comment`；先确认终稿；写入 `commented` | 聊天 + 任务 frontmatter |
+| 定稿收尾 | `df final`：配图/图床/校准/发布交接（脚本跳过配图） | 导出稿 + `local.article.memory.md` |
+| 日记聚合 | Review 区用 Dataview 拉任务字段，避免多处抄写 | 日记模板 |
+| 选题去重 | 只读文件名和 frontmatter | 能力笔记 Covered Topics |
+| 能力画像 | 每天补 1–2 个带证据的能力问题 | 能力笔记 Skill Profile |
 
 ## 使用指南
 
@@ -58,21 +62,31 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 
 它按 [`references/conventions.md`](./references/conventions.md) 描述的目录结构和 frontmatter schema 写文件。**如果你的 vault 结构不一样，先改 `conventions.md` 再跑 `df init`。**
 
-### `df plan` — 每天早上
+### `df review` — 每天早上先跑
 
 ```
-收昨天状态 → 复盘 → 今日候选 → 你选定 → 写入日记与任务文件
+扫发布链接 → 收计数与反馈 → 写任务 Review + reviewed → Snapshot/勾阶梯 →（触发时）确认后改周焦点
 ```
 
-问题一次问完（一个编号问题块，你回一次），ISO 周日和月末会额外触发周复盘 / 月复盘并回写焦点。你报的可支配时间是**硬上限**，估时超过它的候选根本不会出现在表里。
+真实目标数字只写在你 vault 的大目标笔记里，不会进入开源 skill 仓库。
 
-### `df ship` — 每天晚上
+### `df plan` — 复盘之后
 
 ```
-收行动状态 → 双写成稿 → 第一读者点评 → 时间盒配图 → 校准改稿规则 → 发布链接回写
+检查 reviewed →（周日/月末周月复盘）→ 读最新大目标 → 今日候选 → 写入日记与任务
 ```
 
-缺 `local.article.config.md` 时会直接拒绝写正文，而不是退化成一篇无约束草稿再靠你手改捞回来。
+昨日未 `reviewed` 会硬挡。可支配时间是**硬上限**。默认推文章或视频脚本。
+
+### `df ship` → 手改 →（可选）`df comment` → `df final`
+
+```
+ship：勾待办 + 双写 v1/待改稿
+comment：确认终稿后四行点评，写 commented
+final：再确认终稿 → 配图+OSS（文章）→ 校准 → 发布交接
+```
+
+缺 `local.article.config.md` 时文章 ship/final 会直接拒绝，而不是退化成无约束草稿。
 
 ## 依赖
 
@@ -108,12 +122,13 @@ cp local.config.example.md local.config.md
 | `DAILY_VAULT` | 放日记、任务、项目的 vault，技能写入的文件全在这里。必填 |
 | `NOTES_VAULT` | 已有笔记的第二个 vault，只读，仅用于选题去重。留空即跳过去重 |
 | `OWNER` | 写进生成任务文件 `owner` 字段的名字 |
+| `LANGUAGE` | 对话与生成散文语言：`zh` \| `en`（默认 `zh`）；文案见 `references/i18n.md` |
 | `OBJECTIVE_FILE` | 大目标笔记路径（相对 `DAILY_VAULT`），`df init` 会在缺失时创建。必填 |
 | `CAPABILITY_FILE` | 能力子工程笔记路径，留空则画像和里程碑都留在大目标笔记里 |
 | `PUBLISH_SLOTS` | 任务 frontmatter 里存发布链接的字段名，逗号分隔，按你希望被询问的顺序 |
 | `EXTRA_ARCHETYPES` | 可选，只给自己用的候选类型，不进开源文档 |
 
-**3. 填文章配置**（只有 `df ship` 需要）
+**3. 填文章配置**（`df ship` / `df final` 需要）
 
 ```bash
 cp local.article.config.example.md local.article.config.md
