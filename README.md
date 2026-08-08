@@ -8,9 +8,9 @@
 
 你已经有日记、任务、项目和知识库，却还是每天纠结「今天学什么、做什么、写什么」？问题不在记录工具，而在缺少从**长期目标 → 今日行动 → 成果发布 → 反馈改进**的完整闭环。
 
-Daily Flywheel 是一个 Cursor Agent Skill。你告诉它大目标和今天能投入多久，它会给出当天做得完的内容产出候选；你选定一个，晚上先出初稿，手改后再可选点评、定稿配图与校准。**所有状态继续留在你自己的 Obsidian vault，不迁移数据，也不新建一套平行系统。**
+Daily Flywheel 是一个 AI Agent Skill。你告诉它大目标和今天能投入多久，它会给出当天做得完的内容产出候选；你选定一个，晚上先出初稿，手改后再可选点评、定稿配图与校准。**所有状态继续留在你自己的 Obsidian vault，不迁移数据，也不新建一套平行系统。**
 
-![Daily Flywheel：从长期目标、每日计划和今日产出，到成稿发布与反馈校准的 Obsidian AI 工作流](https://files.mdnice.com/user/41327/bbcd45e1-29d6-4d34-b9c0-66c7b5b4daaf.jpg)
+![](https://files.mdnice.com/user/41327/bbcd45e1-29d6-4d34-b9c0-66c7b5b4daaf.jpg)
 
 ## 六条命令，跑起每日产出飞轮
 
@@ -165,16 +165,20 @@ ln -s <你克隆的路径>/daily-flywheel ~/.cursor/skills/daily-flywheel
 ```
 SKILL.md                            路由 + 全局规则
 references/
-  conventions.md                    Obsidian vault 的目录结构、路径、frontmatter
-                                    schema、Tasks 语法与硬约束（结构契约，改这里适配你的 vault）
+  conventions.md                    Obsidian vault 结构契约（路径 / frontmatter / Tasks）
+  i18n.md                           中英用户可见文案（LANGUAGE）
   init.md                           一次性引导
-  plan.md                           早上
-  ship.md                           晚上（含文章配置 / 双写 / 校准）
+  review.md                         昨日复盘
+  plan.md                           今日计划
+  ship.md                           初稿双写
+  comment.md                        可选第一读者点评
+  final.md                          定稿配图 / 校准 / 发布交接
 local.config.example.md             vault 路径模板
 local.article.config.example.md     文章风格 / 读者 / 导出 / 配图模板（私有）
+scripts/                            OSS 图床上传（df final）
 ```
 
-`SKILL.md` 只做路由，按阶段只加载一个 reference。这是刻意的上下文控制：一次对话不需要把四份文档全读进去。想改行为就改对应那一份。
+`SKILL.md` 只做路由，按阶段只加载一个 mode reference。这是刻意的上下文控制：一次对话不需要把全部文档读进去。想改行为就改对应那一份。
 
 ## 更多 skill 使用技巧
 
