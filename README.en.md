@@ -8,7 +8,7 @@
 
 You already have daily notes, tasks, projects, and a knowledge base — yet every morning still starts with “What should I learn, make, or write today?” The missing piece is not another recording tool. It is a loop from **long-term goal → today's action → published result → feedback**.
 
-Daily Flywheel is a Cursor Agent Skill. Give it your goal and today's available hours; it proposes finishable **article/script** candidates. Pick one, ship a v1 draft, hand-edit, optionally critique, then finalize (illustrate / calibrate / hand off). **Everything remains ordinary markdown in your own Obsidian vault — no migration and no parallel system.**
+Daily Flywheel is an AI Agent Skill. Give it your goal and today's available hours; it proposes finishable **article/script** candidates. Pick one, ship a v1 draft, hand-edit, optionally critique, then finalize (illustrate / calibrate / hand off). **Everything remains ordinary markdown in your own Obsidian vault — no migration and no parallel system.**
 
 ## Six commands to run the flywheel
 
