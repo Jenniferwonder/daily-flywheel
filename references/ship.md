@@ -4,14 +4,22 @@ Marks what got done and writes the **v1 draft snapshot** plus the editable worki
 
 User-facing strings: `references/i18n.md` keys under `## ship`. Draft body language: `draft_language` in article config, else `LANGUAGE`.
 
+## Step −1 — Resolve target day
+
+Per `conventions.md` **Target day**: parse optional date from the trigger (`df ship`, `df ship yesterday`, `df ship 2026-08-07`). Default = calendar today. Announce `shared.target_announce`. Stop with `shared.target_missing` if that daily note / main task is absent.
+
 Read, in this order:
 
 1. `local.config.md`
-2. `local.article.config.md` — **required** when today's `deliverable` is `article` (or the plan is clearly a `pub-*` article)
+2. `local.article.config.md` — **required** when the **target day's** `deliverable` is `article` (or the plan is clearly a `pub-*` article)
 3. `local.article.memory.md` if it exists (recent 7 rules — still apply while drafting)
-4. Today's daily note and today's task file
+4. **Target day's** daily note and its main task file
 
-Do not read further back.
+Do not read further back than needed for that day.
+
+### Existing v1 gate
+
+If the target task `## Outcomes` already has frozen v1 prose: **stop** unless the user explicitly said overwrite / 重写 v1. Show `ship.v1_exists` and point them to `df comment <same date>` / `df final <same date>`. On explicit overwrite: replace Outcomes v1, append one Review line that prior v1 was discarded, then continue.
 
 ## Step 0 — Load article config (articles only)
 
@@ -49,16 +57,16 @@ Principle: **do not sacrifice quality to fill time — compress length instead.*
 
 One question: `ship.q_status` for `LANGUAGE`. Map answers via `ship.branch_*` (accept either language).
 
-Mark checkboxes in task + daily note (`✅ YYYY-MM-DD`). Leave unfinished items. Record actual elapsed time under task `## Review` (short; full retro is tomorrow's `df review`).
+Mark checkboxes in **target day's** task + daily note with `✅` = **calendar today**. Leave unfinished items. Record actual elapsed time under task `## Review` (short; full retro is `df review`).
 
 ## Step 2 — Decide what is draftable
 
 - **done** — draft as planned (`article` / `script`).
 - **half-done** — offer: smaller honest slice, or a “stuck where” post/script; do not pretend completion.
 - **changed direction** — draft about what was abandoned and why (still prefer pub-/script-).
-- **did nothing** — do not generate. Ask `ship.ask_why_idle` → `ToImprove::` on the task → stop. **Skip** comment/final for the night.
+- **did nothing** — do not generate. Ask `ship.ask_why_idle` → `ToImprove::` on the task → stop. **Skip** comment/final for this run.
 
-Never draft a deliverable not backed by today's work.
+Never draft a deliverable not backed by the **target day's** work.
 
 ## Step 3 — Write the draft (dual-write)
 
@@ -92,11 +100,11 @@ Show the draft in chat. State the export path as the edit target.
 Task:
 
 - `status: 🟡Doing` until `df final` (or `🟢Done` for `other` with Outcomes only)
-- `DateModified` today
+- `DateModified` / `DateDone` (when setting Done) = **calendar today**
 - Ensure `deliverable` is set
 
-Daily: mark action completion. Leave `## Review` for Dataview / tomorrow's `df review`.
+Target-day daily: mark action completion. Leave `## Review` for Dataview / `df review`.
 
-Close with `ship.closer` for `LANGUAGE`.
+Close with `ship.closer` for `LANGUAGE` (mention same target date for follow-up `comment` / `final` when not today).
 
 Do not critique, illustrate, upload OSS, calibrate, or collect publish URLs in this mode.

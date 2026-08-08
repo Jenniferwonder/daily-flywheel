@@ -4,14 +4,18 @@ One round of first-reader critique on the **hand-edited working copy**. Optional
 
 User-facing strings: `references/i18n.md` (`final.q_is_final`, `comment.labels`, `final.not_final_stop`).
 
+## Step −1 — Resolve target day
+
+Same rule as `df ship` (`conventions.md` **Target day**): `df comment [date]`; default calendar today. Announce `shared.target_announce`. Stop on `shared.target_missing`.
+
 Read:
 
 1. `local.config.md`
-2. Today's daily note → main task link
-3. Today's task file (`deliverable`, `## Outcomes` v1, export path notes)
+2. **Target day's** daily note → main task link
+3. That task file (`deliverable`, `## Outcomes` v1, export path notes)
 4. The **export-path** working markdown (body — required for critique)
 
-Skip entirely when `deliverable` is not `article` or `script` (and path is not `pub-*` / `script-*`). Tell the user `df ship` was enough for this day.
+Skip entirely when `deliverable` is not `article` or `script` (and path is not `pub-*` / `script-*`). Tell the user `df ship` was enough for that day.
 
 ## Step 1 — Final-draft gate
 
@@ -36,4 +40,4 @@ Set task frontmatter:
 commented: YYYY-MM-DD
 ```
 
-Use today's date. This field is a record only; it does not unlock `df final`.
+Use **calendar today** (execution day), not the target day. This field is a record only; it does not unlock `df final`.

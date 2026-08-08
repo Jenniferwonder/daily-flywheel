@@ -4,12 +4,16 @@ Locks the working copy as final, then (for articles) illustrates + uploads image
 
 User-facing strings: `references/i18n.md` keys under `## comment / final`.
 
+## Step −1 — Resolve target day
+
+Same rule as `df ship` (`conventions.md` **Target day**): `df final [date]`; default calendar today. Announce `shared.target_announce`. Stop on `shared.target_missing`.
+
 Read:
 
 1. `local.config.md` (including optional `OSS_*`)
 2. `local.article.config.md` — **required** when `deliverable: article` (or path is `pub-*`)
 3. `local.article.memory.md` if present (most recent 7 rules)
-4. Today's daily note + task file
+4. **Target day's** daily note + main task file
 5. Export-path working file and frozen task `## Outcomes` v1
 
 ## Step 0 — Resolve deliverable type

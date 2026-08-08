@@ -17,6 +17,34 @@ User-facing prompt catalog: `references/i18n.md`.
 
 **Not localized** (schema stability / Dataview / Tasks): `## Actions`, `## Review`, `## Outcomes`, `ToImprove::`, `维度::`, `目标格::`, frontmatter key names, Tasks emoji dates, and fixed path footnotes like `终稿路径` / `配图目录` when already used in the vault. If `LANGUAGE=en`, agents may add an English gloss in chat but must keep those keys in files.
 
+## Target day (`df ship` / `comment` / `final`)
+
+These three modes operate on a **target day** (the daily note whose `## Actions` to close out), which may differ from the **calendar today** (when the command runs).
+
+**Resolve target day from the trigger phrase:**
+
+| Input | Target day |
+|-------|------------|
+| omitted / bare `df ship` | calendar today |
+| `YYYY-MM-DD` | that date |
+| `today` / `今天` | calendar today |
+| `yesterday` / `昨天` | calendar today − 1 day |
+
+Examples: `df ship 2026-08-07`, `df comment yesterday`, `df final 昨天`. Ignore fuzzy weekday phrases; ask for an explicit date instead.
+
+**Path:** resolve the daily note under `Daily\YYYY\YYYY-Qn\YYYY-MM\YYYY-Www\YYYY-MM-DD.md` for the **target** date (ISO week under Monday's month). Main task = that note's `## Actions` line `- 任务：[[...]]`.
+
+**If the target daily note is missing** (or has no main task link): **stop**. Show `shared.target_missing`. Do **not** create an empty daily note.
+
+**Stamps vs reads:**
+
+| Write | Which date |
+|-------|------------|
+| Read/edit daily + task files | **target day** |
+| Tasks `✅`, task `DateDone` / `DateModified`, `commented` stamp | **calendar today** (honest execution day) |
+
+Always say one line at start: `Target day: YYYY-MM-DD` (`shared.target_announce`).
+
 ## The two vaults
 
 | Vault | Placeholder | Role |

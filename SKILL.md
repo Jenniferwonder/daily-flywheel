@@ -54,18 +54,20 @@ Always read `references/conventions.md` first — it holds every path, schema, a
 | `df init`, first ever run, or `{{OBJECTIVE_FILE}}` is missing | Bootstrap north-star + capability sub-project | `references/init.md` |
 | `df review`, "复盘昨天", morning before plan when yesterday is open | Sync publish links; capture feedback; write task Review + `reviewed`; refresh Latest Snapshot; auto-check ladders; optional focus tweak | `references/review.md` |
 | `df plan`, morning, "今天做什么" | Hard-gate on yesterday `reviewed`; ISO Sunday / month-end week/month gates; candidates from **latest** objective; prefer article/script | `references/plan.md` |
-| `df ship`, evening, "写出来", "收工" | Action status + dual-write v1 draft + editable export copy only | `references/ship.md` |
-| `df comment`, "点评" | Optional; confirm 终稿; four-line critique; set `commented` | `references/comment.md` |
-| `df final`, "定稿", "配图", "校准" | Confirm 终稿; article: illustrate + OSS; calibrate; publish handoff. script: skip illustrate/OSS | `references/final.md` |
+| `df ship` [`date`], evening, "写出来", "收工" | Optional target day (default today); action status + dual-write v1 | `references/ship.md` |
+| `df comment` [`date`], "点评" | Optional; same target-day rule; confirm 终稿; critique; set `commented` | `references/comment.md` |
+| `df final` [`date`], "定稿", "配图", "校准" | Optional; same target-day rule; illustrate/OSS/calibrate/handoff | `references/final.md` |
+
+**Target day** (ship/comment/final only): `YYYY-MM-DD` / `today`/`昨天`/`yesterday`/`今天`; omit = calendar today. See `conventions.md`. Stamps (`✅`, `DateDone`, `commented`) use calendar today; files read/written are the target day's.
 
 If the mode is ambiguous:
 
-1. Explicit `df review` / `comment` / `final` / `plan` / `ship` wins.
+1. Explicit `df review` / `comment` / `final` / `plan` / `ship` wins (parse any date arg for the last three).
 2. Else if today's `## Actions` is empty → `plan` (after reminding about `review` if the gate would fail).
 3. Else if today's task has no `## Outcomes` v1 → `ship`.
 4. Else ask whether they want `comment` or `final`.
 
-Typical day: `review` → `plan` → work → `ship` → hand-edit → optional `comment` → `final` → publish → next morning `review`.
+Typical day: `review` → `plan` → work → `ship` → hand-edit → optional `comment` → `final` → publish → next morning `review`. Backfill: `df ship yesterday` then `df comment yesterday` / `df final yesterday`.
 
 ## Rules that apply to every mode
 
