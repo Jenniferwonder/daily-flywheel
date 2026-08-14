@@ -16,9 +16,9 @@ Daily Flywheel is an AI Agent Skill. Give it your goal and today's available hou
 |-------|-------|--------------|
 | `df init` | Your long-term goal and current capabilities | Verifiable result ladders, capability milestones, and a topic baseline |
 | `df review` | Yesterday's work + current counters | Task retro + `reviewed`, objective Snapshot/ladder ticks; optional week-focus tweak |
-| `df plan` | Today's hours (requires yesterday `reviewed`) | 3–5 article/script candidates written into daily + task |
-| `df ship` | What you actually completed | Frozen v1 + editable export draft (no critique/images) |
-| `df comment` | Hand-edited final (optional) | Four-line critique; stamps `commented` |
+| `df plan` | Today's hours (requires yesterday `reviewed`); optional hot-topic refresh | 3–5 article/script candidates (objective + sourced hot topics) |
+| `df ship` | What you actually completed | Frozen v1 + editable export draft (funnel skeleton; style abstract + memory) |
+| `df comment` | Hand-edited final (optional) | Advisory checklist score + four-line critique; stamps `commented` |
 | `df final` | Confirmed final draft | Article: images + OSS + calibrate + handoff; script: skip images |
 
 ## Install now
@@ -43,10 +43,10 @@ Then copy the two example configs, fill in your vault paths and article preferen
 | Feature | What it does | Where it lands |
 |---------|--------------|----------------|
 | Yesterday review | Sync links, capture counters/feedback, task Review, Snapshot + auto ladder ticks; propose focus tweaks when triggered | Task + objective note (vault only) |
-| Today's decision | From the **latest** objective + hours, 3–5 article/script candidates | Daily `## Actions` + task file |
+| Today's decision | From the **latest** objective, hours, and URL-backed hot topics, 3–5 article/script candidates (three-way filter) | Daily `## Actions` + task file |
 | Goal cascade | Year → month → week → day; tasks need `goalDim` / `goalStep` / `deliverable` | Objective / month / week notes |
 | Dual-write draft | `df ship`: freeze v1 in the task; export path for hand-edits | Task `## Outcomes` + export dir |
-| First-reader critique | Optional `df comment` after confirming final; stamps `commented` | Chat + task frontmatter |
+| First-reader critique | Optional `df comment` after confirming final; advisory score + four-line critique; stamps `commented` | Chat + task frontmatter |
 | Finalize | `df final`: images/OSS/calibrate/handoff (scripts skip images) | Export draft + `local.article.memory.md` |
 | Daily aggregation | Review section Dataviews task fields — no multi-write | Daily template |
 | Topic dedup | Filenames + frontmatter only | Capability Covered Topics |
@@ -71,16 +71,16 @@ Real goal numbers stay in your vault objective note — never in the open skill 
 ### `df plan` — after review
 
 ```
-require reviewed -> (Sunday/month-end gates) -> read latest objective -> candidates -> write daily + task
+require reviewed -> (Sunday/month-end gates) -> read latest objective -> optional hot-topic refresh -> three-way filter -> write daily + task
 ```
 
-Hard-stops if yesterday is not `reviewed`. Hours are a **hard ceiling**. Defaults to article/script days.
+Hard-stops if yesterday is not `reviewed`. Hours are a **hard ceiling**. Defaults to article/script days. Candidates must serve This Week **and** a URL-backed hot-topics row when one exists; missing sources are marked `not found` — never invented.
 
 ### `df ship` → hand-edit → (optional) `df comment` → `df final`
 
 ```
-ship: checkboxes + dual-write v1/export draft
-comment: confirm final → four-line critique → commented date
+ship: task checkboxes + dual-write v1 (funnel skeleton; style abstract + memory, no long sample essays)
+comment: confirm final → advisory checklist score + four-line critique → commented date
 final: confirm final → images+OSS (articles) → calibrate → publish handoff
 ```
 
@@ -106,7 +106,7 @@ Obsidian community plugins, five required, plus core daily notes:
 npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 ```
 
-The skill shows up at `~/.cursor/skills/daily-flywheel` (a symlink to the canonical copy by default; add `--copy` if symlinks fail on Windows). Both config files below go in that directory.
+The skill shows up at `~/.cursor/skills/daily-flywheel` (a symlink to the canonical copy by default; add `--copy` if symlinks fail on Windows). Vault and article configs go in that directory.
 
 **2. Fill in the vault config**
 
@@ -124,6 +124,7 @@ cp local.config.example.md local.config.md
 | `OBJECTIVE_FILE` | Path of the north-star objective note, relative to `DAILY_VAULT`. Created by `df init` if missing. Required |
 | `CAPABILITY_FILE` | Path of the capability sub-project note; blank keeps the profile and milestones on the objective note |
 | `PUBLISH_SLOTS` | Frontmatter keys that store publish URLs, comma-separated, in the order you want to be asked |
+| `HOT_TOPICS_FILE` | Last-7-day URL-backed topics note (gitignored). Defaults to `local.hot-topics.md` |
 | `EXTRA_ARCHETYPES` | Optional private candidate rows that never enter the open docs |
 
 **3. Fill in the article config** (`df ship` / `df final` need it)
@@ -132,7 +133,12 @@ cp local.config.example.md local.config.md
 cp local.article.config.example.md local.article.config.md
 ```
 
-`audience`, `export_dir`, and `export_slug_pattern` are required; ship policy, style, illustration budget, and per-channel export steps (`publish_export`) are optional.
+`audience`, `export_dir`, and `export_slug_pattern` are required; ship policy, voice/taboos/terms, illustration budget, and per-channel export steps (`publish_export`) are optional. Also copy the style abstract and hot-topics templates:
+
+```bash
+cp local.article.style.example.md local.article.style.md
+cp local.hot-topics.example.md local.hot-topics.md
+```
 
 **4. Run it**
 
@@ -140,7 +146,7 @@ Type `df init` in Cursor.
 
 If the config is missing the skill stops and tells you, rather than guessing a vault path — a wrong guess scatters files into the wrong vault.
 
-**The config holds locations, slot key names, and optional private archetypes — not goal content.** What you are aiming at, how you measure it, where the thresholds sit, and any accounts or numbers involved live only in the objective note inside your vault, read at runtime; per-channel export steps live in `local.article.config.md`. Both config files are gitignored, so a pasted config, a screen-share, or an accidental `git add -f` cannot leak the goal itself. Examples under `references/` are invented placeholders on purpose — do not replace them with your own values, or a fork or PR will carry them out.
+**The config holds locations, slot key names, and optional private archetypes — not goal content.** What you are aiming at, how you measure it, where the thresholds sit, and any accounts or numbers involved live only in the objective note inside your vault, read at runtime; per-channel export steps live in `local.article.config.md`. Vault, article, style, and hot-topics files are gitignored, so a pasted config, a screen-share, or an accidental `git add -f` cannot leak the goal itself. Examples under `references/` are invented placeholders on purpose — do not replace them with your own values, or a fork or PR will carry them out.
 
 ### Hacking on it / contributing
 
@@ -166,14 +172,22 @@ references/
   conventions.md                  the Obsidian vault contract: folder layout, paths,
                                   frontmatter schema, Tasks syntax, hard constraints
                                   (edit this to fit your own vault)
+  i18n.md                         bilingual user-facing strings (LANGUAGE)
   init.md                         one-time bootstrap
-  plan.md                         morning
-  ship.md                         evening (article config / dual-write / calibration)
+  review.md                       yesterday review
+  plan.md                         morning (three-way filter + hot-topics note)
+  ship.md                         evening (funnel skeleton; style abstract + memory)
+  comment.md                      optional critique (advisory scorecard; does not block final)
+  article-craft.md                abstract slots for topic / funnel / score
+  final.md                        illustrate / calibrate / publish handoff
 local.config.example.md           vault path template
-local.article.config.example.md   style / audience / export / illustration template (private)
+local.article.config.example.md   voice / audience / export / illustration template (private)
+local.article.style.example.md    distilled house-style template (private)
+local.hot-topics.example.md       last-7-day hot-topics template (private)
+scripts/                          OSS image upload (df final)
 ```
 
-`SKILL.md` only routes, and loads exactly one reference per phase. That is deliberate context control — no conversation needs all four documents at once. To change behaviour, edit the one reference that owns it.
+`SKILL.md` only routes, and loads exactly one mode reference per phase. That is deliberate context control — no conversation needs every reference at once. To change behaviour, edit the one file that owns it.
 
 ## More tips
 

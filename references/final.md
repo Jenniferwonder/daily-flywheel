@@ -39,9 +39,26 @@ Skip if config sets `cover: false` and `max_inline_images: 0`.
 
 Budget: `illustrate_timebox_min` (default 45). Say the budget out loud.
 
+### Visual defaults (from `local.article.config.md`)
+
+If present, treat these as **hard constraints** for every cover/inline image in this run (do not auto-pick a conflicting palette/rendering):
+
+| Key | Meaning |
+|-----|---------|
+| `illustrate_style` | e.g. `sketch-notes` |
+| `illustrate_palette` | e.g. `warm` |
+| `illustrate_rendering` | e.g. `hand-drawn` |
+| `illustrate_cover_title` | `centered` → cover title block must be horizontally centered (upper-middle); never corner/side |
+| `illustrate_visual_ref` | optional style note path — read before prompting |
+| `illustrate_style_refs` | optional PNG paths — pass as style reference images when the backend allows |
+
+Also honor baoyu `EXTEND.md` under the notes vault `.baoyu-skills/` when it agrees with the above.
+
+State the assumed style/palette/rendering/cover-title rule in one line before generating.
+
 Order:
 
-1. **Cover** via `baoyu-cover-image` when `cover: true` → `images_dir_pattern`
+1. **Cover** via `baoyu-cover-image` when `cover: true` → `images_dir_pattern` (enforce `illustrate_cover_title` in the prompt)
 2. **Inline images** via `baoyu-article-illustrator`, capped at `max_inline_images`
 3. When `illustrate_confirm: false`, invoke baoyu skills with skip-confirm wording so their confirmation gate does not burn the timebox
 4. On timebox breach: drop remaining inline images first, **keep the cover**, link what exists into the export-path markdown

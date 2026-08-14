@@ -2,7 +2,7 @@
 
 Decides today. Does **not** close yesterday — that is `df review`. Job: hand the user a finishable deliverable sized to today's hours, aligned to the **latest** objective note.
 
-User-facing strings: `references/i18n.md` keys under `## plan` for `LANGUAGE`.
+User-facing strings: `references/i18n.md` keys under `## plan` for `LANGUAGE`. Article-candidate craft: `references/article-craft.md`.
 
 Read the north-star objective first: `{{DAILY_VAULT}}\{{OBJECTIVE_FILE}}` — Purpose, `## 维度字典`, ladders, `## Latest Snapshot`, `## This Year` / `## This Month` / `## This Week`, Baseline. Then capability sub-project `{{CAPABILITY_FILE}}` for Skill Profile, Open Questions, Covered Topics. If the north-star file is missing, run `init` instead. Read today's daily note if it exists. On ISO Sunday also skim this week's daily `## Actions` / task Outcomes (scoped). On calendar month-end skim this month's week Review headers if they exist.
 
@@ -52,19 +52,27 @@ If neither gate applies, skip Step 0b.
 
 Ask once (`plan.q_block` for `LANGUAGE`), then wait. On Sunday/month-end, finish Step 0b confirmations **before** this block.
 
+Include hot-topics refresh as item 3 (`plan.q_hot`). If `HOT_TOPICS_FILE` is missing or `updated` is older than 7 days, say so in the question (`plan.hot_stale`).
+
 No yesterday-completion / feedback questions here — those belong to `df review`.
 
 ## Step 2 — Update the profile
 
 Fold the reply to question 2 into the capability Skill Profile; move answered items out of Open Questions. Evidence must name a specific artifact, failure, or trade-off.
 
-## Step 3 — Dedup scan
+## Step 3 — Dedup scan + hot topics
 
 Scoped scans from `conventions.md`. Refresh Covered Topics when new notes appeared. Already-written topics are not candidates unless the angle is genuinely new.
 
+**Hot topics** (after Step 1 reply), path from `HOT_TOPICS_FILE` (default `local.hot-topics.md` in the skill directory):
+
+1. User said **yes**, or file missing / `updated` >7 days **and** user did not say **no**: WebSearch AI topics for the last ~7 days on douyin / zhihu / x / youtube. Write only URL-backed rows. Source with no hit → `未取到`. Never invent titles or links. Set `updated` to calendar today.
+2. User said **no**: read the existing file as-is. If missing or stale, candidates may still run but Why-today must say `无可用热点，只服务本周格子` (or the `en` equivalent).
+3. Do not copy hot-topic titles into this repository.
+
 ## Step 4 — Build candidates
 
-Produce 3 to 5 candidates. **Re-read the objective note immediately before building** so Snapshot, ladder checks, and any `df review` edits to This Week are included.
+Produce 3 to 5 candidates. **Re-read the objective note immediately before building** so Snapshot, ladder checks, and any `df review` edits to This Week are included. Apply the **three-way filter** in `article-craft.md` (who × situation × information increment vs Covered Topics). Drop slogan rows.
 
 ### Deliverable bias (hard preference)
 
@@ -115,7 +123,7 @@ Rules:
 - Difficulty: at least one Comfort / 舒适区 row.
 - `goalDim` + `goalStep` mandatory; `goalStep` copied verbatim from the objective.
 - Reject slogan candidates.
-- Why-today: prefer `## This Week`, then Month/Year, profile gaps, natural next step, time ceiling. Never invent industry trends.
+- Why-today: `## This Week` + **one URL-backed hot-topics row** (or explicit no-hot-topic fallback). Then Month/Year, profile gaps, time ceiling. Never invent industry trends.
 - At least one candidate advances `## This Week` when that section is non-empty.
 - Candidate **cell text** (titles, why-today) in `LANGUAGE`.
 
@@ -138,7 +146,7 @@ Create `Tasks\New\Backlog\<prefix>-<slug>.md`:
 
 Action items need `🛫 YYYY-MM-DD`.
 
-Write today's daily note `## Actions` (fully rendered): task link, `维度::` / `目标格::`, objective / week / month links, time budget, same checkboxes. Do **not** write yesterday's Review.
+Write today's daily note `## Actions` as **aggregation headers only** (fully rendered): 今日产出, task link, `维度::` / `目标格::`, objective / week / month links, time budget, optional 备注. Optionally one line: 待办只在任务卡. **Never** copy task `## Actions` checkboxes into the daily note — Tasks Todo/Done queries aggregate them. Do **not** write yesterday's Review.
 
 Chat: deliverable, budget, ladder cell, first action. Nothing else.
 

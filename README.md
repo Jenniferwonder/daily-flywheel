@@ -18,9 +18,9 @@ Daily Flywheel 是一个 AI Agent Skill。你告诉它大目标和今天能投�
 |------|------|----------|
 | `df init` | 你的长期目标与现有能力 | 可验收的结果阶梯、能力里程碑和选题基线 |
 | `df review` | 昨日行动与各平台当前计数 | 任务复盘、`reviewed` 戳记、大目标 Snapshot/阶梯勾选；可选周焦点微调 |
-| `df plan` | 今天可支配的时间（须已 `df review`） | 3–5 个做得完的 **文章/脚本** 候选，写入日记和任务 |
-| `df ship` | 今天实际完成的工作 | 冻结 v1 + 导出路径待改稿（不点评、不配图） |
-| `df comment` | 手改后的终稿（可选） | 四行第一读者点评；任务写入 `commented` 日期 |
+| `df plan` | 今天的时间（须已 `df review`）；可选更新热点 | 3–5 个文章/脚本候选（对齐大目标 + 热点笔记） |
+| `df ship` | 今天实际完成的工作 | 冻结 v1 + 导出路径待改稿（漏斗骨架；读风格摘要+校准） |
+| `df comment` | 手改后的终稿（可选） | 清单打分（不拦 final）+ 四行点评 |
 | `df final` | 确认终稿 | 文章：配图+图床回贴+校准+发布交接；脚本：跳过配图 |
 
 ## 立即安装
@@ -45,10 +45,10 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 | 功能 | 做什么 | 写到哪 |
 |------|--------|--------|
 | 昨日复盘 | 收链接与反馈、写任务 Review、刷新 Snapshot、自动勾阶梯；触发时提议优化方向 | 任务 + 大目标笔记（vault 内） |
-| 今日决策 | 按**最新**大目标与当天时间，给 3–5 个文章/脚本候选 | 今日日记 `## Actions` + 任务文件 |
+| 今日决策 | 按**最新**大目标、当天时间与 URL 热点笔记，三维过滤出 3–5 个文章/脚本候选 | 今日日记 `## Actions` + 任务文件 |
 | 目标级联 | 年 → 月 → 周 → 日单源下推；任务须带 `goalDim` / `goalStep` / `deliverable` | 大目标笔记 / 月记 / 周记 |
 | 成稿双写 | `df ship`：任务冻结 v1，导出路径供手改 | 任务 `## Outcomes` + 导出目录 |
-| 第一读者点评 | 可选 `df comment`；先确认终稿；写入 `commented` | 聊天 + 任务 frontmatter |
+| 第一读者点评 | 可选 `df comment`；清单打分（不拦 final）+ 四行点评；写入 `commented` | 聊天 + 任务 frontmatter |
 | 定稿收尾 | `df final`：配图/图床/校准/发布交接（脚本跳过配图） | 导出稿 + `local.article.memory.md` |
 | 日记聚合 | Review 区用 Dataview 拉任务字段，避免多处抄写 | 日记模板 |
 | 选题去重 | 只读文件名和 frontmatter | 能力笔记 Covered Topics |
@@ -73,16 +73,16 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 ### `df plan` — 复盘之后
 
 ```
-检查 reviewed →（周日/月末周月复盘）→ 读最新大目标 → 今日候选 → 写入日记与任务
+检查 reviewed →（周日/月末周月复盘）→ 读最新大目标 → 可选刷新热点笔记 → 三维过滤出候选 → 写入日记与任务
 ```
 
-昨日未 `reviewed` 会硬挡。可支配时间是**硬上限**。默认推文章或视频脚本。
+昨日未 `reviewed` 会硬挡。可支配时间是**硬上限**。默认推文章或视频脚本。候选必须同时服务本周格子和（有 URL 的）热点笔记；搜不到的源写「未取到」，不编造热点。
 
 ### `df ship` → 手改 →（可选）`df comment` → `df final`
 
 ```
-ship：勾待办 + 双写 v1/待改稿
-comment：确认终稿后四行点评，写 commented
+ship：勾待办 + 双写 v1（漏斗骨架；读风格摘要+校准，不重读长范文）
+comment：确认终稿后清单打分（不拦 final）+ 四行点评，写 commented
 final：再确认终稿 → 配图+OSS（文章）→ 校准 → 发布交接
 ```
 
@@ -108,7 +108,7 @@ Obsidian 社区插件，5 个必需，加核心的 daily notes：
 npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 ```
 
-技能会挂在 `~/.cursor/skills/daily-flywheel`（默认是指向本地副本的符号链接，Windows 上创建失败就加 `--copy`），下面两份配置填在这个目录里。
+技能会挂在 `~/.cursor/skills/daily-flywheel`（默认是指向本地副本的符号链接，Windows 上创建失败就加 `--copy`），vault / 文章配置填在这个目录里。
 
 **2. 填 vault 配置**
 
@@ -126,6 +126,7 @@ cp local.config.example.md local.config.md
 | `OBJECTIVE_FILE` | 大目标笔记路径（相对 `DAILY_VAULT`），`df init` 会在缺失时创建。必填 |
 | `CAPABILITY_FILE` | 能力子工程笔记路径，留空则画像和里程碑都留在大目标笔记里 |
 | `PUBLISH_SLOTS` | 任务 frontmatter 里存发布链接的字段名，逗号分隔，按你希望被询问的顺序 |
+| `HOT_TOPICS_FILE` | 近 7 天带 URL 的热点笔记（gitignore）。默认 `local.hot-topics.md` |
 | `EXTRA_ARCHETYPES` | 可选，只给自己用的候选类型，不进开源文档 |
 
 **3. 填文章配置**（`df ship` / `df final` 需要）
@@ -134,7 +135,12 @@ cp local.config.example.md local.config.md
 cp local.article.config.example.md local.article.config.md
 ```
 
-必填 `audience`、`export_dir`、`export_slug_pattern`；其余（成稿策略、风格、配图预算、各渠道导出步骤 `publish_export`）按需填。
+必填 `audience`、`export_dir`、`export_slug_pattern`；其余（成稿策略、人设/禁区/术语、配图预算、各渠道导出步骤 `publish_export`）按需填。风格摘要另拷一份：
+
+```bash
+cp local.article.style.example.md local.article.style.md
+cp local.hot-topics.example.md local.hot-topics.md
+```
 
 **4. 跑起来**
 
@@ -142,7 +148,7 @@ cp local.article.config.example.md local.article.config.md
 
 读不到配置时技能会停下来提示你，不会去猜路径 —— 猜错会把文件写进错误的 vault。
 
-**配置只放位置、字段名和可选私有候选类型，不放目标内容。** 你在追什么、怎么衡量、门槛定在哪、涉及哪些账号与数字，只写在 vault 里那篇大目标笔记，技能运行时去读；各渠道怎么导出写在 `local.article.config.md`。两份配置都已在 `.gitignore` 里。所以贴配置求助、录屏、误用 `git add -f`，都带不出目标本身。`references/` 里的例子全是编造的占位值，别替换成自己的真实数据，否则 fork 或提 PR 会一起带出去。
+**配置只放位置、字段名和可选私有候选类型，不放目标内容。** 你在追什么、怎么衡量、门槛定在哪、涉及哪些账号与数字，只写在 vault 里那篇大目标笔记，技能运行时去读；各渠道怎么导出写在 `local.article.config.md`。vault / 文章 / 风格摘要 / 热点笔记都已在 `.gitignore` 里。所以贴配置求助、录屏、误用 `git add -f`，都带不出目标本身。`references/` 里的例子全是编造的占位值，别替换成自己的真实数据，否则 fork 或提 PR 会一起带出去。
 
 ### 想改源码 / 参与贡献
 
@@ -169,12 +175,15 @@ references/
   i18n.md                           中英用户可见文案（LANGUAGE）
   init.md                           一次性引导
   review.md                         昨日复盘
-  plan.md                           今日计划
-  ship.md                           初稿双写
-  comment.md                        可选第一读者点评
+  plan.md                           今日计划（三维过滤 + 热点笔记）
+  ship.md                           初稿双写（漏斗骨架；风格摘要 + 校准）
+  comment.md                        可选点评（清单打分不拦 final）
+  article-craft.md                  选题/漏斗/打分抽象槽位
   final.md                          定稿配图 / 校准 / 发布交接
 local.config.example.md             vault 路径模板
-local.article.config.example.md     文章风格 / 读者 / 导出 / 配图模板（私有）
+local.article.config.example.md     人设 / 读者 / 导出 / 配图模板（私有）
+local.article.style.example.md      抽出来的文章风格摘要模板（私有）
+local.hot-topics.example.md         近 7 天热点笔记模板（私有）
 scripts/                            OSS 图床上传（df final）
 ```
 

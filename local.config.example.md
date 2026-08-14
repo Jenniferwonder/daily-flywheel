@@ -43,6 +43,10 @@ CAPABILITY_FILE: Projects\Scope\Skills\my-capability-project.md
 # Use whatever names match your vault schema — the skill never hardcodes them.
 PUBLISH_SLOTS: pub_a, pub_b, pub_c
 
+# Optional. Last-7-day sourced topics for df plan (gitignored).
+# Copy local.hot-topics.example.md → local.hot-topics.md
+HOT_TOPICS_FILE: local.hot-topics.md
+
 # Optional. Extra rows for the df plan candidate table, beyond the generic
 # article / open-source archetypes in references/plan.md.
 # Leave blank (or omit) to skip. Put personal / channel-specific tactics here

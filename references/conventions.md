@@ -159,6 +159,7 @@ done
 ```
 
 ## Actions
+_焦点头信息由 `df plan` 写入；待办 checkbox 只在任务卡 `## Actions`，本区不重复（上方 Todo / Done 查询聚合）。_
 ## Review
 _复盘正文、反馈数字、ToImprove 写在当日主任务 `## Review`（`df review`）。本区只做聚合。_
 
@@ -191,9 +192,9 @@ SORT modified ASC
 ```
 ````
 
-The flywheel writes into `## Actions` (today's plan and checkboxes). `## Review` is **Dataview-first**: `df review` does not copy prose into the daily note. Keep the Tasks query blocks; they populate themselves.
+The flywheel writes into `## Actions` (**plan headers only**). Checkbox todos live **only** on the task file `## Actions`; the daily note must not duplicate them (Tasks Todo/Done queries already aggregate by date). `## Review` is **Dataview-first**: `df review` does not copy prose into the daily note. Keep the Tasks query blocks; they populate themselves.
 
-`## Actions` header lines, written before the checkboxes, are the day-level end of the focus cascade:
+`## Actions` header lines are the day-level end of the focus cascade:
 
 ```markdown
 - 今日产出：<one line>
@@ -203,6 +204,7 @@ The flywheel writes into `## Actions` (today's plan and checkboxes). `## Review`
 - 目标文件：[[<objective note>]]（能力底座 [[<capability note>]]）
 - 周/月：[[YYYY-Www]] · [[YYYY-MM]]
 - 时间预算：2 小时（硬上限）
+- 待办：只在任务卡 `## Actions`；本区不重复 checkbox
 ```
 
 `维度::` and `目标格::` use Dataview inline-field syntax on purpose, so a day can be rolled up by dimension later. They must match the task file's `goalDim` / `goalStep` exactly.
@@ -301,8 +303,10 @@ Private files in the skill directory (gitignored, never committed):
 
 | File | Role |
 |------|------|
-| `local.article.config.md` | Style, audience, export paths, illustration budget for `df ship` / `df final` |
-| `local.article.memory.md` | ≤7 recent executable rewrite rules learned from v1→final diffs (`df final`) |
+| `local.article.config.md` | Voice, 禁区, 术语降维, audience, export paths, illustration budget |
+| `local.article.style.md` | Distilled house style for `df ship` (not long sample essays) |
+| `local.article.memory.md` | ≤7 recent executable rewrite rules from v1→final (`df ship` + `df final`) |
+| `local.hot-topics.md` (or `HOT_TOPICS_FILE`) | URL-backed last-7-day topics for `df plan` |
 
 Copy `local.article.config.example.md` to create the real config. Article ship/final
 refuse if the file or its required keys are missing. Publish URLs belong in the

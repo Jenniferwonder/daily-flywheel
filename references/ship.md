@@ -11,9 +11,11 @@ Per `conventions.md` **Target day**: parse optional date from the trigger (`df s
 Read, in this order:
 
 1. `local.config.md`
-2. `local.article.config.md` — **required** when the **target day's** `deliverable` is `article` (or the plan is clearly a `pub-*` article)
-3. `local.article.memory.md` if it exists (recent 7 rules — still apply while drafting)
-4. **Target day's** daily note and its main task file
+2. `local.article.config.md` — **required** when the **target day's** `deliverable` is `article` (or the plan is clearly a `pub-*` article). Also read `positioning` / `personas` / `taboos` / `term_map` when present.
+3. `local.article.style.md` (or `style_path` if it already points at a **short** distilled file). **Do not** open long sample essays on every ship. If the style file is missing, use inline `style:`. If `style_path` resolves to a full sample post (long narrative, many screenshots), ignore it and use `local.article.style.md` or inline `style:`.
+4. `local.article.memory.md` if it exists (recent 7 rules — still apply while drafting; **memory wins** over style)
+5. **Target day's** daily note and its main task file
+6. `references/article-craft.md` for the v1 skeleton
 
 Do not read further back than needed for that day.
 
@@ -38,7 +40,8 @@ Resolve:
 | Key | Role |
 |-----|------|
 | `ship_policy` | `quality` \| `time` \| `hybrid` (default `hybrid`) |
-| `style_path` / `style` | Voice constraints |
+| `style_path` / `style` | Distilled house style (`local.article.style.md`); not a full sample essay |
+| `positioning` / `personas` / `taboos` / `term_map` | Voice + bans + jargon glosses |
 | `audience` | Reader brief |
 | `export_dir` + `export_slug_pattern` | Working markdown path |
 | `images_dir_pattern` | Noted for later `df final`; unused here |
@@ -57,7 +60,7 @@ Principle: **do not sacrifice quality to fill time — compress length instead.*
 
 One question: `ship.q_status` for `LANGUAGE`. Map answers via `ship.branch_*` (accept either language).
 
-Mark checkboxes in **target day's** task + daily note with `✅` = **calendar today**. Leave unfinished items. Record actual elapsed time under task `## Review` (short; full retro is `df review`).
+Mark checkboxes in the **target day's task file only** with `✅` = **calendar today**. Leave unfinished items. Do **not** add or sync checkbox lines on the daily note (daily `## Actions` stays header-only). Record actual elapsed time under task `## Review` (short; full retro is `df review`).
 
 ## Step 2 — Decide what is draftable
 
@@ -80,13 +83,18 @@ Write the script package (title / spoken lines / shots or screen-record notes / 
 
 ### `deliverable: article`
 
-Write markdown, first person, sized under `ship_policy` (prefer 1500–2500 characters of substance when time allows).
+Write markdown, first person, sized under `ship_policy` (prefer 1500–2500 characters of substance when time allows). **One status question, then draft** — do not confirm an outline in a second turn.
 
-Inject: `audience`, style, recent memory rules.
+Inject: config voice (`taboos`, `term_map`), `local.article.style.md`, recent **memory** rules (memory wins).
 
-Structure: concrete open → process/trade-offs with evidence → one quotable close + next step.
+v1 skeleton (`article-craft.md` — do not drop slots under hybrid; shorten examples instead):
 
-Hard rules: no 随着…的发展 / 在当今…时代 / 众所周知; every claim has evidence; no empty heading scaffolding; keep the user's voice.
+1. Title: number/contrast × curiosity × low jargon
+2. Open (3 seconds): pain / contrast / result-first
+3. Funnel: Why (≥3 reasons) → Fit (scenes) → How (today's evidence) → Next (one step)
+4. Chunks ~5–7 lines; first paragraph has no unexplained jargon
+
+Hard rules: no 随着…的发展 / 在当今…时代 / 众所周知; every claim has evidence; no empty heading scaffolding; keep the user's voice; honor `taboos`.
 
 **Dual-write (same bytes, once):**
 
@@ -103,7 +111,7 @@ Task:
 - `DateModified` / `DateDone` (when setting Done) = **calendar today**
 - Ensure `deliverable` is set
 
-Target-day daily: mark action completion. Leave `## Review` for Dataview / `df review`.
+Target-day daily: leave `## Actions` headers alone (no checkbox writes). Leave `## Review` for Dataview / `df review`.
 
 Close with `ship.closer` for `LANGUAGE` (mention same target date for follow-up `comment` / `final` when not today).
 

@@ -2,7 +2,7 @@
 
 One round of first-reader critique on the **hand-edited working copy**. Optional: `df final` does **not** require this mode. When this mode completes successfully, stamp the task.
 
-User-facing strings: `references/i18n.md` (`final.q_is_final`, `comment.labels`, `final.not_final_stop`).
+User-facing strings: `references/i18n.md` (`final.q_is_final`, `comment.labels`, `comment.score_advisory`, `comment.scorecard`, `final.not_final_stop`). Craft checklist: `references/article-craft.md`.
 
 ## Step −1 — Resolve target day
 
@@ -24,13 +24,15 @@ Ask `final.q_is_final` for `LANGUAGE`, then wait.
 - **no** → stop. Do **not** set `commented`. Show `final.not_final_stop`. Re-run after edits (or go to `df final`, which asks again).
 - **yes** → continue.
 
-## Step 2 — Four-line critique
+## Step 2 — Scorecard + four-line critique
 
-No score, no empty praise. Use `comment.labels` for `LANGUAGE`.
+Score the **hand-edited** export file with the comment table in `article-craft.md` (labels: `comment.scorecard` for `LANGUAGE`). Show `comment.score_advisory` with the percent and list failed boxes. This score is **advisory** — it does **not** block `df final`.
+
+Then four lines (`comment.labels`). No empty praise.
 
 Offer to apply **only that single improvement** to the export-path file. Never edit frozen `## Outcomes` v1. Critique prose in `LANGUAGE`.
 
-Append a short pointer under task `## Review` (`comment: 已评 YYYY-MM-DD`) without pasting the whole critique essay if the Review section is already long — chat holds the four lines.
+Append a short pointer under task `## Review` (`comment: 已评 YYYY-MM-DD` + score percent) without pasting the whole critique essay if the Review section is already long — chat holds the scorecard and four lines.
 
 ## Step 3 — Stamp
 

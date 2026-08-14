@@ -14,8 +14,15 @@ Required keys: `audience`, `export_dir`, `export_slug_pattern`.
 # or "stuck" post — never pad a long weak draft just to fill time.
 ship_policy: hybrid
 
-# Path to a style sample or style notes (markdown). Optional if you use `style:` instead.
-style_path: 
+# Distilled house style for df ship (preferred). Copy local.article.style.example.md
+# → local.article.style.md. Do not point this at a long sample essay.
+style_path: local.article.style.md
+
+# Voice (df ship). Fill locally; never commit real bans/audience into the open repo.
+positioning: |
+personas: |
+taboos: |
+term_map: |
 
 # Inline style notes. Used when style_path is empty.
 style: |
@@ -42,6 +49,15 @@ cover: true
 max_inline_images: 4
 illustrate_confirm: false          # ship passes skip-confirm to the illustrator skills when false
 illustrate_timebox_min: 45         # on timeout: drop inline images first, keep cover
+
+# Illustration visual defaults (optional but recommended)
+# illustrate_style: sketch-notes
+# illustrate_palette: warm
+# illustrate_rendering: hand-drawn
+# illustrate_cover_title: centered   # cover title must be horizontally centered
+# illustrate_visual_ref:             # path to a short visual style note
+# illustrate_style_refs: |           # optional PNG refs for style matching
+#   path\to\ref1.png
 
 # Per-slot export / handoff for df final.
 # Keys must match PUBLISH_SLOTS in local.config.md.

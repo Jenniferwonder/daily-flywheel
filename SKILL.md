@@ -32,6 +32,7 @@ Every path, goal filename, and platform name in this skill is a placeholder. Res
 | `CAPABILITY_FILE` | Optional path of the capability sub-project note (skill profile, engineering milestones). Blank keeps everything on `OBJECTIVE_FILE` |
 | `PUBLISH_SLOTS` | Comma-separated frontmatter keys that store publish URLs on task / article notes |
 | `EXTRA_ARCHETYPES` | Optional private rows for the `df plan` candidate table; leave blank to skip |
+| `HOT_TOPICS_FILE` | Optional gitignored markdown of last-7-day sourced topics for `df plan`. Defaults to `local.hot-topics.md` in this skill directory |
 
 If `local.config.md` does not exist, stop and tell the user to copy `local.config.example.md` to `local.config.md` and fill it in. Do not guess a vault path, and do not proceed with placeholders unresolved — writing to a guessed path scatters files into the wrong vault.
 
@@ -41,21 +42,21 @@ If `NOTES_VAULT` is absent or points nowhere, skip dedup scanning rather than fa
 
 ### Article config
 
-Article drafts (`df ship`) and article finalize (`df final`) require `local.article.config.md` (gitignored). Copy from `local.article.config.example.md`. Learned edit rules from v1→final diffs live in `local.article.memory.md` (also gitignored). Memory rules must stay abstract — never store private goal totals there.
+Article drafts (`df ship`) and article finalize (`df final`) require `local.article.config.md` (gitignored). Copy from `local.article.config.example.md`. Distilled house style lives in `local.article.style.md` (copy `local.article.style.example.md`); `df ship` reads that file instead of long sample essays. Learned edit rules from v1→final diffs live in `local.article.memory.md` (also gitignored). Memory rules must stay abstract — never store private goal totals there. Plan-time hot topics live in `HOT_TOPICS_FILE` (gitignored).
 
 If the article config is missing when an article deliverable needs it, refuse to draft/finalize — do not silently fall back to an unconfigured write.
 
 ## Routing
 
-Always read `references/conventions.md` first — it holds every path, schema, and hard constraint. Resolve `LANGUAGE` from `local.config.md` (default `zh`) and skim `references/i18n.md` for that language's user-facing strings. Then read **exactly one** mode reference. Never read all mode refs.
+Always read `references/conventions.md` first — it holds every path, schema, and hard constraint. Resolve `LANGUAGE` from `local.config.md` (default `zh`) and skim `references/i18n.md` for that language's user-facing strings. Then read **exactly one** mode reference. Never read all mode refs. `df plan` / `df ship` / `df comment` may also read `references/article-craft.md` (abstract slots only).
 
 | Trigger | Mode | Reference |
 |---------|------|-----------|
 | `df init`, first ever run, or `{{OBJECTIVE_FILE}}` is missing | Bootstrap north-star + capability sub-project | `references/init.md` |
 | `df review`, "复盘昨天", morning before plan when yesterday is open | Sync publish links; capture feedback; write task Review + `reviewed`; refresh Latest Snapshot; auto-check ladders; optional focus tweak | `references/review.md` |
-| `df plan`, morning, "今天做什么" | Hard-gate on yesterday `reviewed`; ISO Sunday / month-end week/month gates; candidates from **latest** objective; prefer article/script | `references/plan.md` |
-| `df ship` [`date`], evening, "写出来", "收工" | Optional target day (default today); action status + dual-write v1 | `references/ship.md` |
-| `df comment` [`date`], "点评" | Optional; same target-day rule; confirm 终稿; critique; set `commented` | `references/comment.md` |
+| `df plan`, morning, "今天做什么" | Hard-gate on yesterday `reviewed`; ISO Sunday / month-end week/month gates; candidates from **latest** objective + URL-backed hot topics; prefer article/script | `references/plan.md` |
+| `df ship` [`date`], evening, "写出来", "收工" | Optional target day (default today); action status + dual-write v1 (funnel skeleton; style abstract + memory) | `references/ship.md` |
+| `df comment` [`date`], "点评" | Optional; same target-day rule; confirm 终稿; advisory scorecard + critique; set `commented` | `references/comment.md` |
 | `df final` [`date`], "定稿", "配图", "校准" | Optional; same target-day rule; illustrate/OSS/calibrate/handoff | `references/final.md` |
 
 **Target day** (ship/comment/final only): `YYYY-MM-DD` / `today`/`昨天`/`yesterday`/`今天`; omit = calendar today. See `conventions.md`. Stamps (`✅`, `DateDone`, `commented`) use calendar today; files read/written are the target day's.
@@ -77,7 +78,7 @@ Typical day: `review` → `plan` → work → `ship` → hand-edit → optional 
 3. **A live Obsidian instance will rewrite what you write.** Linter strips trailing whitespace after empty YAML values and `update-time-on-edit` rewrites `DateModified`. Expect a diff larger than your edit, and never treat that as corruption.
 4. **Never scan a vault recursively without a narrow path filter.** Use the exact scoped commands in `conventions.md`.
 5. **Read filenames and frontmatter, never note bodies**, unless the mode requires a named file (export draft, task Outcomes, objective ladders, etc.).
-6. **Never invent industry trends or news.** Justification for "why today" must cite the user's own state from the objective / profile / yesterday's files.
+6. **Never invent industry trends or news.** Why-today cites the objective / profile / yesterday **and**, when present, a **URL-backed** row in `HOT_TOPICS_FILE`. If a source was not fetched, write `未取到` — do not fabricate titles or links.
 7. **Respect the time budget as a hard ceiling.**
 8. **Structured output only.** Candidate lists, plans, and reviews are tables or short bullets. Long prose is the article/script in `ship` (and image prompts inside `final`).
 9. **Edit in place, additively.** Preserve existing content; fill empty sections rather than rewriting files.

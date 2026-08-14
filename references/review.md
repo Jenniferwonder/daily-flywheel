@@ -14,7 +14,7 @@ Read, in this order:
 
 **Privacy hard rule:** thresholds, counters, account names, and ladder cell text live only in the vault objective note (and gitignored local configs). Never copy those values into this repository, chat summaries destined for PRs, or example files. In chat, prefer “阶梯第 N 格已勾” over repeating raw totals when a screen-share risk exists.
 
-**Do not write** yesterday's daily note body (template Dataview reads the task). Do not rewrite week/month mirror Focus here — `df plan` Step 0c still owns mirrors after any objective edit.
+**Daily note writes (minimal):** do **not** copy Review prose into the daily. If yesterday's daily `## Actions` still has `- [ ]` / `- [x]` checkbox lines (legacy duplicate of the task), **strip those lines** and leave header aggregation only — optionally keep/add `待办：只在任务卡…`. Do not rewrite week/month mirror Focus here — `df plan` Step 0c still owns mirrors after any objective edit.
 
 ## Step 0 — Sync publish links (silent)
 
