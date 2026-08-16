@@ -12,13 +12,14 @@ Daily Flywheel 是一个 AI Agent Skill。你告诉它大目标和今天能投�
 
 ![](https://files.mdnice.com/user/41327/bbcd45e1-29d6-4d34-b9c0-66c7b5b4daaf.jpg)
 
-## 六条命令，跑起每日产出飞轮
+## 七条命令，跑起每日产出飞轮
 
 | 阶段 | 输入 | 得到什么 |
 |------|------|----------|
 | `df init` | 你的长期目标与现有能力 | 可验收的结果阶梯、能力里程碑和选题基线 |
 | `df review` | 昨日行动与各平台当前计数 | 任务复盘、`reviewed` 戳记、大目标 Snapshot/阶梯勾选；可选周焦点微调 |
 | `df plan` | 今天的时间（须已 `df review`）；可选更新热点 | 3–5 个文章/脚本候选（对齐大目标 + 热点笔记） |
+| `df study` | 学习资源 + 类型（book/codebase/video/tutorial，可推断） | 题单（读前一次给全）→ 回答感悟 → 逐题评价建议 → Anki 卡片（确认后写入）→ 供料文章 |
 | `df ship` | 今天实际完成的工作 | 冻结 v1 + 导出路径待改稿（漏斗骨架；读风格摘要+校准） |
 | `df comment` | 手改后的终稿（可选） | 清单打分（不拦 final）+ 四行点评 |
 | `df final` | 确认终稿 | 文章：配图+图床回贴+校准+发布交接；脚本：跳过配图 |
@@ -36,6 +37,7 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 - **每天直接产出，不再面对空白日记。** 候选受长期目标和真实时间预算约束，超时的任务不会混进来。
 - **复用现有 Obsidian 系统。** 日记、任务、项目、周月复盘仍是普通 markdown，不把知识锁进另一款应用。
 - **从计划一直走到发布。** 它不止列待办，还负责成稿、点评、配图、发布链接回写与后续反馈收集。
+- **学习也能变成产出。** 可选 `df study`：给定一本书 / 代码仓库 / 视频 / 教程，读前一次给全高价值问题，回答后逐题点评，知识点沉淀为 Anki 兼容卡片并回链主题笔记，直接为系列文章供料。
 - **越用越贴近你的写法。** 首稿与终稿的差异会沉淀为私有改稿规则，后续草稿逐步减少重复手改。
 - **真实目标和渠道配置只留本地。** 目标、数字、账号与导出步骤不会写进开源仓库。
 - **中英双语 UI。** 在 `local.config.md` 设 `LANGUAGE: zh` 或 `en`；对话与生成散文跟偏好走，vault 结构字段保持稳定（见 `references/i18n.md`）。
@@ -44,9 +46,10 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 
 | 功能 | 做什么 | 写到哪 |
 |------|--------|--------|
+| 目标级联 | 年 → 月 → 周 → 日单源下推；任务须带 `goalDim` / `goalStep` / `deliverable` | 大目标笔记 / 月记 / 周记 |
 | 昨日复盘 | 收链接与反馈、写任务 Review、刷新 Snapshot、自动勾阶梯；触发时提议优化方向 | 任务 + 大目标笔记（vault 内） |
 | 今日决策 | 按**最新**大目标、当天时间与 URL 热点笔记，三维过滤出 3–5 个文章/脚本候选 | 今日日记 `## Actions` + 任务文件 |
-| 目标级联 | 年 → 月 → 周 → 日单源下推；任务须带 `goalDim` / `goalStep` / `deliverable` | 大目标笔记 / 月记 / 周记 |
+| 问答式学习 | 可选 `df study`：按资源类型路由（书/代码/视频/教程）；问题覆盖全章 → 评价 → Anki 兼容卡片（内部复习） | 知识库 `STUDY_CARDS_DIR`（卡片）+ 任务卡（题单/回答/评价） |
 | 成稿双写 | `df ship`：任务冻结 v1，导出路径供手改 | 任务 `## Outcomes` + 导出目录 |
 | 第一读者点评 | 可选 `df comment`；清单打分（不拦 final）+ 四行点评；写入 `commented` | 聊天 + 任务 frontmatter |
 | 定稿收尾 | `df final`：配图/图床/校准/发布交接（脚本跳过配图） | 导出稿 + `local.article.memory.md` |
@@ -78,6 +81,19 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 
 昨日未 `reviewed` 会硬挡。可支配时间是**硬上限**。默认推文章或视频脚本。候选必须同时服务本周格子和（有 URL 的）热点笔记；搜不到的源写「未取到」，不编造热点。
 
+### `df study` — 可选：问答驱动的阅读学习
+
+输入一个学习资源和它的类型。不给类型时按资源推断：`.pdf`/`.epub` → book、含 `.git` 的目录 → codebase、视频文件/链接 → video、`.md`/`.html`/文档链接 → tutorial。流程按类型路由：
+
+| 类型 | 提取 | 单位 | 出处 | 实践切片 | deck 路由 |
+|------|------|------|------|----------|-----------|
+| book | `pdftotext` 页范围 | 章/节 | 小节 + 印刷页 | 跑书中示例 / 小探针 | `PREFIX::Ch-XX` |
+| codebase | 定向读仓库区域 | 模块 / 功能 / diff | 文件 + 行号 | 复现 / 修改 / 基准 | `PREFIX::Module-XX` |
+| video | 字幕 / 带时间戳分段浏览 | 片段（时间区间） | 片段 + 时间戳 | 跟做一遍 | `PREFIX::Part-XX` |
+| tutorial | 读文档小节 | 课 / 节 | 小节 + 行/URL | 跟做并记偏差 | `PREFIX::Lesson-XX` |
+
+读前一次给全覆盖该单位**全部重要概念**的高价值问题（题数不设上限，以覆盖为准；长单位切成多个 cycle）；你带问题读、回答 + 感悟；我逐题点评并给下一步建议；确认后把知识点写成 Anki 兼容卡片（每章一文件、每知识点一卡，deck 路由行 + `### 知识点` 卡头），并回链知识库主题笔记。卡片只做内部复习；系列文章正文必须转述，文末可注明参考了哪份卡片。
+
 ### `df ship` → 手改 →（可选）`df comment` → `df final`
 
 ```
@@ -99,6 +115,7 @@ Obsidian 社区插件，5 个必需，加核心的 daily notes：
 | `obsidian-tasks-plugin` | 待办的 Due / Todo / Done 区块 |
 | `obsidian-kanban` | 任务看板 |
 | `periodic-notes` | 周报月报 |
+| `obsidian-to-anki-plugin` | （可选，`df study`）把知识点卡片导出到 Anki；不装则卡片只留在 Obsidian |
 
 ## 安装与配置
 
@@ -128,6 +145,9 @@ cp local.config.example.md local.config.md
 | `PUBLISH_SLOTS` | 任务 frontmatter 里存发布链接的字段名，逗号分隔，按你希望被询问的顺序 |
 | `HOT_TOPICS_FILE` | 近 7 天带 URL 的热点笔记（gitignore）。默认 `local.hot-topics.md` |
 | `EXTRA_ARCHETYPES` | 可选，只给自己用的候选类型，不进开源文档 |
+| `STUDY_CARDS_DIR` | 可选。`df study` 卡片与主题笔记目录（唯一写允许的 `NOTES_VAULT` 例外）；留空禁用 study |
+| `STUDY_DECK_PREFIX` | 可选。Anki deck 前缀，如 `AI-Engineering` |
+| `STUDY_TYPES` | 可选。支持的学习类型：`book, tutorial, codebase, video`，可扩展 |
 
 **3. 填文章配置**（`df ship` / `df final` 需要）
 
@@ -176,10 +196,11 @@ references/
   init.md                           一次性引导
   review.md                         昨日复盘
   plan.md                           今日计划（三维过滤 + 热点笔记）
+  study.md                          可选问答式学习（按资源类型路由 + 卡片模板）
   ship.md                           初稿双写（漏斗骨架；风格摘要 + 校准）
   comment.md                        可选点评（清单打分不拦 final）
-  article-craft.md                  选题/漏斗/打分抽象槽位
   final.md                          定稿配图 / 校准 / 发布交接
+  article-craft.md                  选题/漏斗/打分抽象槽位
 local.config.example.md             vault 路径模板
 local.article.config.example.md     人设 / 读者 / 导出 / 配图模板（私有）
 local.article.style.example.md      抽出来的文章风格摘要模板（私有）

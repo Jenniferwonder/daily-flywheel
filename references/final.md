@@ -12,7 +12,7 @@ Read:
 
 1. `local.config.md` (including optional `OSS_*`)
 2. `local.article.config.md` — **required** when `deliverable: article` (or path is `pub-*`)
-3. `local.article.memory.md` if present (most recent 7 rules)
+3. `local.article.memory.md` if present (all active rules; incremental)
 4. **Target day's** daily note + main task file
 5. Export-path working file and frozen task `## Outcomes` v1
 
@@ -79,7 +79,7 @@ If OSS keys are missing: one line that hosting was skipped; do not invent creden
 
 1. Diff frozen `## Outcomes` v1 against the export-path file (script: same if v1 exists; if Outcomes has no prose body, skip with one line).
 2. Derive **at most 5** executable rewrite rules (not an essay). Rules must stay abstract — **no private goal totals, account names, or ladder thresholds** in `local.article.memory.md`.
-3. Append to `local.article.memory.md` with today's date; keep only the most recent 7 usable rules.
+3. Append to `local.article.memory.md` with today's date. **Incremental:** add a rule only if it does not duplicate or contradict an existing rule, house style, or comment/scorecard bars. Do **not** drop older rules to keep a count of 7. User may still hand-edit or delete.
 4. Tell the user they may edit or delete rules in that gitignored file.
 
 ## Step 4 — Publish handoff

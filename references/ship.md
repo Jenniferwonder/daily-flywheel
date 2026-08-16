@@ -13,11 +13,15 @@ Read, in this order:
 1. `local.config.md`
 2. `local.article.config.md` — **required** when the **target day's** `deliverable` is `article` (or the plan is clearly a `pub-*` article). Also read `positioning` / `personas` / `taboos` / `term_map` when present.
 3. `local.article.style.md` (or `style_path` if it already points at a **short** distilled file). **Do not** open long sample essays on every ship. If the style file is missing, use inline `style:`. If `style_path` resolves to a full sample post (long narrative, many screenshots), ignore it and use `local.article.style.md` or inline `style:`.
-4. `local.article.memory.md` if it exists (recent 7 rules — still apply while drafting; **memory wins** over style)
-5. **Target day's** daily note and its main task file
-6. `references/article-craft.md` for the v1 skeleton
+4. `references/article-craft.md` — **comment/scorecard rules** (funnel, Why≥3, title formula, 3-second open, chunks). These are the same bars `df comment` scores.
+5. `local.article.memory.md` if it exists — **all** active rules (incremental; no 7-rule cap). Skip a rule that duplicates or contradicts a higher-priority source.
+6. **Target day's** daily note and its main task file
+
+**Draft priority (high → low, on conflict):** house style → `df comment` / article-craft bars → calibration memory. Memory never overrides style or comment bars.
 
 Do not read further back than needed for that day.
+
+**Hot topics:** do **not** scrape platform trending during `df ship`. If the draft needs a heat hook, read `HOT_TOPICS_FILE` as filled by `df plan` (AI-themed rows only). No AI row → skip the hook; never substitute music/gaming/celebrity trending.
 
 ### Existing v1 gate
 
@@ -83,18 +87,18 @@ Write the script package (title / spoken lines / shots or screen-record notes / 
 
 ### `deliverable: article`
 
-Write markdown, first person, sized under `ship_policy` (prefer 1500–2500 characters of substance when time allows). **One status question, then draft** — do not confirm an outline in a second turn.
+**Topic gate (articles, required when house style / memory says so — default on for this vault):** After status is `done` / `half-done` / `changed direction`, do **not** write the article body yet. In the same turn or the next wait, propose: (1) today's one topic sentence + why it is the highest-value finishable piece from **today's Actions**; (2) a short outline (spine + chapter list). Wait for confirm or a revised topic. Only then draft. Generating several full drafts to “see which one lands” is forbidden.
 
-Inject: config voice (`taboos`, `term_map`), `local.article.style.md`, recent **memory** rules (memory wins).
+Write markdown, first person, sized under `ship_policy`. **流程短文** prefer 1500–2500 characters of substance when time allows. **深度长文**（house style「何时用哪一套」）不压这个字数；长度 = 跳过共识后仍能指到文件的机制。
 
-v1 skeleton (`article-craft.md` — do not drop slots under hybrid; shorten examples instead):
+Inject: config voice (`taboos`, `term_map`), then house style, then comment/scorecard bars, then memory (style wins on conflict).
 
-1. Title: number/contrast × curiosity × low jargon
-2. Open (3 seconds): pain / contrast / result-first
-3. Funnel: Why (≥3 reasons) → Fit (scenes) → How (today's evidence) → Next (one step)
-4. Chunks ~5–7 lines; first paragraph has no unexplained jargon
+v1 skeleton (`article-craft.md` — pick 流程短文 or 深度长文; do not drop that skeleton's required slots under hybrid):
 
-Hard rules: no 随着…的发展 / 在当今…时代 / 众所周知; every claim has evidence; no empty heading scaffolding; keep the user's voice; honor `taboos`.
+- 流程短文：Title → 3-second open → Why≥3 / Fit / How / Next → 5–7 line chunks
+- 深度长文：对象+跳过共识+切口 → 一句脊柱 → 一章一机制（动机/源码/差异/所以呢）→ 机制映射回产品问题。Do not force the funnel.
+
+Hard rules: no 随着…的发展 / 在当今…时代 / 众所周知; every claim has evidence from **today's Actions / Outcomes** (hot-topic URLs may illustrate a pull, not stand in for work); no news recap of `HOT_TOPICS_FILE` with no lived step; no empty heading scaffolding; keep the user's voice; honor `taboos`.
 
 **Dual-write (same bytes, once):**
 

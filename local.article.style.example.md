@@ -4,6 +4,8 @@ Copy to `local.article.style.md` (gitignored). `df ship` reads **this file**, no
 
 Fill with executable rules distilled from *your* sample posts: opening, evidence, section rhythm, close, bans. Keep it shorter than a full article.
 
+If you write mechanism / architecture teardowns, add a **深度长文** section (see `ds-deep-long.md` in the notes vault writing-style folder). Process tutorials stay on the short funnel; do not force Why≥3 onto a teardown.
+
 ```markdown
 # House style (distilled)
 

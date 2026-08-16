@@ -66,7 +66,12 @@ Scoped scans from `conventions.md`. Refresh Covered Topics when new notes appear
 
 **Hot topics** (after Step 1 reply), path from `HOT_TOPICS_FILE` (default `local.hot-topics.md` in the skill directory):
 
-1. User said **yes**, or file missing / `updated` >7 days **and** user did not say **no**: WebSearch AI topics for the last ~7 days on douyin / zhihu / x / youtube. Write only URL-backed rows. Source with no hit → `未取到`. Never invent titles or links. Set `updated` to calendar today.
+1. User said **yes**, or file missing / `updated` >7 days **and** user did not say **no**:
+   1. Resolve `TRENDRADAR_DIR` from `local.config.md` (default `{{CODESPACE_DIR}}/TrendRadar`). If the repo is missing, **clone** `https://github.com/sansan0/TrendRadar` **only into `CODESPACE_DIR`** (never another folder). If `github.com:443` times out, a git mirror is allowed; the destination path must still be under `CODESPACE_DIR`.
+   2. Prefer TrendRadar for CN lists (`zhihu`, `douyin`, `bilibili-hot-search`): run `scripts/trendradar_hot_topics.py --write` (optional `--crawl` if today's db is missing). If Cursor MCP `trendradar` is connected, `search_news` with `query=AI` / `人工智能`, `include_url=true`, same platforms is equivalent. Then apply the **skill AI needle** (drop non-AI titles even if TrendRadar returned them).
+   3. `x` / `youtube` / `google`: WebSearch **AI-themed** only (Google = News/Trends/search hits with a URL, not the generic homepage). Or `未取到`. Do not block the day.
+   4. If TrendRadar fails entirely: fall back to WebSearch **AI-themed** topics for the last ~7 days on douyin / zhihu / x / youtube / google. Every query must include `AI` / `人工智能` (or a named AI product). A platform's general trending tab (music, gaming, celebrity, sports) is **not** a hit even if it has a URL — write `未取到`.
+   5. Write only URL-backed **AI** rows. Never invent titles or links. Set `updated` to calendar today.
 2. User said **no**: read the existing file as-is. If missing or stale, candidates may still run but Why-today must say `无可用热点，只服务本周格子` (or the `en` equivalent).
 3. Do not copy hot-topic titles into this repository.
 
@@ -123,7 +128,8 @@ Rules:
 - Difficulty: at least one Comfort / 舒适区 row.
 - `goalDim` + `goalStep` mandatory; `goalStep` copied verbatim from the objective.
 - Reject slogan candidates.
-- Why-today: `## This Week` + **one URL-backed hot-topics row** (or explicit no-hot-topic fallback). Then Month/Year, profile gaps, time ceiling. Never invent industry trends.
+- Reject chase-the-news candidates: if the spine is a hot-topic row and today's Actions are not the evidence, drop it. Hot topics **angle** the day's work; they do not replace it.
+- Why-today: `## This Week` + **today's named action**. Then one URL-backed hot-topics row as optional seasoning (or `无可用热点，只服务本周格子`). Then Month/Year, profile gaps, time ceiling. Never invent industry trends.
 - At least one candidate advances `## This Week` when that section is non-empty.
 - Candidate **cell text** (titles, why-today) in `LANGUAGE`.
 

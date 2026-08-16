@@ -29,6 +29,8 @@ Ask once (`review.q_block` for `LANGUAGE`), then wait.
 
 Day one / no publishable output: drop items that do not apply rather than forcing “none”.
 
+If `REVIEW_SKIP_ENGAGEMENT` is `true` in `local.config.md`, **drop item 3**（阅读/点赞/评论/转发/关注）. Do not ask. If the user volunteers numbers, still record them on the task. This flag is local; do not copy it into examples.
+
 ## Step 2 — Write task `## Review` (SSOT)
 
 Write **only** into yesterday's main task:

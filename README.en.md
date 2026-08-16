@@ -10,13 +10,14 @@ You already have daily notes, tasks, projects, and a knowledge base — yet ever
 
 Daily Flywheel is an AI Agent Skill. Give it your goal and today's available hours; it proposes finishable **article/script** candidates. Pick one, ship a v1 draft, hand-edit, optionally critique, then finalize (illustrate / calibrate / hand off). **Everything remains ordinary markdown in your own Obsidian vault — no migration and no parallel system.**
 
-## Six commands to run the flywheel
+## Seven commands to run the flywheel
 
 | Phase | Input | What you get |
 |-------|-------|--------------|
 | `df init` | Your long-term goal and current capabilities | Verifiable result ladders, capability milestones, and a topic baseline |
 | `df review` | Yesterday's work + current counters | Task retro + `reviewed`, objective Snapshot/ladder ticks; optional week-focus tweak |
 | `df plan` | Today's hours (requires yesterday `reviewed`); optional hot-topic refresh | 3–5 article/script candidates (objective + sourced hot topics) |
+| `df study` | Learning resource + type (book/codebase/video/tutorial; inferred when omitted) | Question set (all upfront) → answers/reflection → per-question evaluation → Anki cards (after confirmation) → article feed |
 | `df ship` | What you actually completed | Frozen v1 + editable export draft (funnel skeleton; style abstract + memory) |
 | `df comment` | Hand-edited final (optional) | Advisory checklist score + four-line critique; stamps `commented` |
 | `df final` | Confirmed final draft | Article: images + OSS + calibrate + handoff; script: skip images |
@@ -34,6 +35,7 @@ Then copy the two example configs, fill in your vault paths and article preferen
 - **Ship every day instead of facing a blank note.** Candidates are constrained by your long-term goal and real time budget; oversized work never enters the list.
 - **Keep the Obsidian system you already own.** Daily notes, tasks, projects, and weekly/monthly reviews remain ordinary markdown.
 - **Go all the way from plan to publish.** It handles the draft, critique, illustrations, publish-link sync, and later feedback collection — not just a to-do list.
+- **Turn learning into output.** Optional `df study`: point it at a book / codebase / video / tutorial; high-value questions arrive upfront, answers are evaluated, and knowledge points become Anki-compatible cards linked from the theme note — feeding the article pipeline.
 - **Make later drafts sound more like you.** Differences between the first and final drafts become private editing rules, reducing repeated manual fixes over time.
 - **Keep real goals and channel setup local.** Goals, numbers, accounts, and export steps never enter the open repository.
 - **Bilingual UI.** Set `LANGUAGE: zh` or `en` in `local.config.md`; chat and generated prose follow it. Vault schema keys stay stable (see `references/i18n.md`).
@@ -42,9 +44,10 @@ Then copy the two example configs, fill in your vault paths and article preferen
 
 | Feature | What it does | Where it lands |
 |---------|--------------|----------------|
+| Goal cascade | Year → month → week → day; tasks need `goalDim` / `goalStep` / `deliverable` | Objective / month / week notes |
 | Yesterday review | Sync links, capture counters/feedback, task Review, Snapshot + auto ladder ticks; propose focus tweaks when triggered | Task + objective note (vault only) |
 | Today's decision | From the **latest** objective, hours, and URL-backed hot topics, 3–5 article/script candidates (three-way filter) | Daily `## Actions` + task file |
-| Goal cascade | Year → month → week → day; tasks need `goalDim` / `goalStep` / `deliverable` | Objective / month / week notes |
+| Question-driven study | Optional `df study`: routes by resource type (book/codebase/video/tutorial); questions cover the whole unit → evaluation → Anki-compatible cards (internal review) | `STUDY_CARDS_DIR` cards + task (questions/answers/evaluation) |
 | Dual-write draft | `df ship`: freeze v1 in the task; export path for hand-edits | Task `## Outcomes` + export dir |
 | First-reader critique | Optional `df comment` after confirming final; advisory score + four-line critique; stamps `commented` | Chat + task frontmatter |
 | Finalize | `df final`: images/OSS/calibrate/handoff (scripts skip images) | Export draft + `local.article.memory.md` |
@@ -76,6 +79,19 @@ require reviewed -> (Sunday/month-end gates) -> read latest objective -> optiona
 
 Hard-stops if yesterday is not `reviewed`. Hours are a **hard ceiling**. Defaults to article/script days. Candidates must serve This Week **and** a URL-backed hot-topics row when one exists; missing sources are marked `not found` — never invented.
 
+### `df study` — optional: question-driven reading loop
+
+Give it a learning resource and its type. When the type is omitted it is inferred: `.pdf`/`.epub` → book, a repo dir with `.git` → codebase, a video file/URL → video, `.md`/`.html`/docs URL → tutorial. The flow routes by type:
+
+| Type | Extract | Unit | Source tag | Practice slice | Deck route |
+|------|---------|------|------------|----------------|------------|
+| book | `pdftotext` page range | chapter / section | section + print page | run a book example / small probe | `PREFIX::Ch-XX` |
+| codebase | scoped repo read | module / feature / diff | file + line | reproduce / modify / benchmark | `PREFIX::Module-XX` |
+| video | transcript / chaptered skim | segment (time range) | segment + timestamp | redo the steps | `PREFIX::Part-XX` |
+| tutorial | read the docs section | lesson / section | section + line/URL | follow steps, note deviations | `PREFIX::Lesson-XX` |
+
+All high-value questions covering **every key concept** of the unit are given upfront (no fixed cap — coverage decides; long units split into multiple cycles). You read with the questions, answer all, and add a reflection; the agent evaluates each answer and suggests next steps; after confirmation, knowledge points become Anki-compatible cards (one file per unit, one card per knowledge point, deck-route line + `### knowledge point` front), linked back from the theme note. Cards are internal review material; series articles must rephrase card content, citing the card note only at the end.
+
 ### `df ship` → hand-edit → (optional) `df comment` → `df final`
 
 ```
@@ -97,6 +113,7 @@ Obsidian community plugins, five required, plus core daily notes:
 | `obsidian-tasks-plugin` | Due / Todo / Done blocks |
 | `obsidian-kanban` | Task board |
 | `periodic-notes` | Weekly and monthly notes |
+| `obsidian-to-anki-plugin` | (optional, `df study`) exports knowledge-point cards to Anki; without it cards stay in Obsidian only |
 
 ## Install and configure
 
@@ -126,6 +143,9 @@ cp local.config.example.md local.config.md
 | `PUBLISH_SLOTS` | Frontmatter keys that store publish URLs, comma-separated, in the order you want to be asked |
 | `HOT_TOPICS_FILE` | Last-7-day URL-backed topics note (gitignored). Defaults to `local.hot-topics.md` |
 | `EXTRA_ARCHETYPES` | Optional private candidate rows that never enter the open docs |
+| `STUDY_CARDS_DIR` | Optional. `df study` cards + theme-note directory (the only write-allowed `NOTES_VAULT` exception); blank disables study |
+| `STUDY_DECK_PREFIX` | Optional. Anki deck prefix, e.g. `AI-Engineering` |
+| `STUDY_TYPES` | Optional. Supported learning kinds: `book, tutorial, codebase, video`; extensible |
 
 **3. Fill in the article config** (`df ship` / `df final` need it)
 
@@ -176,10 +196,11 @@ references/
   init.md                         one-time bootstrap
   review.md                       yesterday review
   plan.md                         morning (three-way filter + hot-topics note)
+  study.md                        optional question-driven study (resource-type routing + card template)
   ship.md                         evening (funnel skeleton; style abstract + memory)
   comment.md                      optional critique (advisory scorecard; does not block final)
-  article-craft.md                abstract slots for topic / funnel / score
   final.md                        illustrate / calibrate / publish handoff
+  article-craft.md                abstract slots for topic / funnel / score
 local.config.example.md           vault path template
 local.article.config.example.md   voice / audience / export / illustration template (private)
 local.article.style.example.md    distilled house-style template (private)

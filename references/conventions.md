@@ -52,6 +52,26 @@ Always say one line at start: `Target day: YYYY-MM-DD` (`shared.target_announce`
 | Daily | `{{DAILY_VAULT}}` | All flywheel state: daily notes, tasks, projects, output. Everything this skill writes goes here. |
 | Notes | `{{NOTES_VAULT}}` | An existing body of technical notes. **Read-only for this skill.** Used only to avoid recommending a topic already written. Optional — skip dedup if unset. |
 
+## Study mode (optional)
+
+- `df study` writes cards + theme note into `STUDY_CARDS_DIR` (from
+  `local.config.md`). This is the **only** write exception to the read-only
+  `NOTES_VAULT` rule; everything else about the Notes vault stays read-only.
+- `df study` routes by resource type (`book` / `codebase` / `video` /
+  `tutorial`): extraction, source tags, question lean, practice slice, and deck
+  route follow the type table in `references/study.md`. Type omitted → inferred
+  from the resource; unknown → ask.
+- Card layout: `<STUDY_CARDS_DIR>/cards/<unit-slug>.md` (one file per unit, one
+  `###` card per knowledge point) + `<STUDY_CARDS_DIR>/<theme>.md` (theme note
+  with Dataview aggregation). See `references/study.md`.
+- Deck route line at the top of each card file:
+  `<STUDY_DECK_PREFIX>::Ch-XX`. Obsidian_to_Anki stamps `<!--ID-->` on sync;
+  never hand-write IDs.
+- The study day's `te-` task is the day SSOT: questions in Purpose, answers +
+  reflection in Outcomes, evaluation in Review. Cards in `STUDY_CARDS_DIR` are
+  the distilled output, written only after user confirmation.
+- Long units split into multiple cycles; each cycle is its own `te-` task.
+
 ## Scoped scan commands
 
 Never substitute a broader scan. On a cloud-synced or network drive a depth-2 recursive listing can take ~50 seconds.
@@ -305,7 +325,7 @@ Private files in the skill directory (gitignored, never committed):
 |------|------|
 | `local.article.config.md` | Voice, 禁区, 术语降维, audience, export paths, illustration budget |
 | `local.article.style.md` | Distilled house style for `df ship` (not long sample essays) |
-| `local.article.memory.md` | ≤7 recent executable rewrite rules from v1→final (`df ship` + `df final`) |
+| `local.article.memory.md` | Incremental executable rewrite rules from v1→final (`df ship` + `df final`); no 7-rule cap; skip dup/contradict |
 | `local.hot-topics.md` (or `HOT_TOPICS_FILE`) | URL-backed last-7-day topics for `df plan` |
 
 Copy `local.article.config.example.md` to create the real config. Article ship/final

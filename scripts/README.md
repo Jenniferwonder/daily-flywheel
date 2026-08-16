@@ -1,5 +1,18 @@
 # scripts
 
+## `trendradar_hot_topics.py`
+
+Query a local [TrendRadar](https://github.com/sansan0/TrendRadar) clone for AI-themed
+hot items and optionally write `HOT_TOPICS_FILE`. Does not copy the crawler.
+
+```bash
+python scripts/trendradar_hot_topics.py --write
+python scripts/trendradar_hot_topics.py --crawl --write
+```
+
+`TRENDRADAR_DIR` / `CODESPACE_DIR` come from `local.config.md`. Clone only under `CODESPACE_DIR`.
+Requires `uv` on PATH. Windows consoles need `PYTHONUTF8=1`.
+
 ## `oss_upload_images.py`
 
 Upload local images referenced by an article markdown file to Aliyun OSS, rewrite

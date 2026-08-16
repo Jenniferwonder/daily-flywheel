@@ -5,8 +5,10 @@ description: >-
   north-star objective, plans a finishable content deliverable for today, ships
   a v1 draft, optionally critiques the hand-edited final, then illustrates /
   calibrates / hands off publish. Use when the user invokes daily-flywheel, df,
-  df plan, df review, df ship, df comment, df final, 飞轮, 日更, or asks what to
-  produce today / to close out yesterday / to ship or finalize the day's output.
+  df plan, df review, df ship, df comment, df final, df study, 飞轮, 日更, or
+  asks what to produce today / to close out yesterday / to ship or finalize the
+  day's output / to learn a book chapter or resource with questions (学习某章 /
+  带问题读 / 读书笔记).
 ---
 
 # Daily Output Flywheel
@@ -33,6 +35,11 @@ Every path, goal filename, and platform name in this skill is a placeholder. Res
 | `PUBLISH_SLOTS` | Comma-separated frontmatter keys that store publish URLs on task / article notes |
 | `EXTRA_ARCHETYPES` | Optional private rows for the `df plan` candidate table; leave blank to skip |
 | `HOT_TOPICS_FILE` | Optional gitignored markdown of last-7-day sourced topics for `df plan`. Defaults to `local.hot-topics.md` in this skill directory |
+| `CODESPACE_DIR` | Local clone root for third-party repos. **Always** clone here (never elsewhere). |
+| `TRENDRADAR_DIR` | Path of the [TrendRadar](https://github.com/sansan0/TrendRadar) clone. Defaults to `{{CODESPACE_DIR}}/TrendRadar`. Used by `df plan` hot-topic refresh. |
+| `STUDY_CARDS_DIR` | Optional. Write-allowed dir for study cards + theme note (sole exception to read-only `NOTES_VAULT`). Blank disables `df study`. |
+| `STUDY_DECK_PREFIX` | Optional. Anki deck prefix for study cards, e.g. `AI-Engineering`. |
+| `STUDY_TYPES` | Optional. Comma list of supported learning kinds: `book, tutorial, codebase, video`. Extend by editing this key. |
 
 If `local.config.md` does not exist, stop and tell the user to copy `local.config.example.md` to `local.config.md` and fill it in. Do not guess a vault path, and do not proceed with placeholders unresolved — writing to a guessed path scatters files into the wrong vault.
 
@@ -42,7 +49,7 @@ If `NOTES_VAULT` is absent or points nowhere, skip dedup scanning rather than fa
 
 ### Article config
 
-Article drafts (`df ship`) and article finalize (`df final`) require `local.article.config.md` (gitignored). Copy from `local.article.config.example.md`. Distilled house style lives in `local.article.style.md` (copy `local.article.style.example.md`); `df ship` reads that file instead of long sample essays. Learned edit rules from v1→final diffs live in `local.article.memory.md` (also gitignored). Memory rules must stay abstract — never store private goal totals there. Plan-time hot topics live in `HOT_TOPICS_FILE` (gitignored).
+Article drafts (`df ship`) and article finalize (`df final`) require `local.article.config.md` (gitignored). Copy from `local.article.config.example.md`. Distilled house style lives in `local.article.style.md` (copy `local.article.style.example.md`); `df ship` reads that file instead of long sample essays. Learned edit rules from v1→final diffs live in `local.article.memory.md` (also gitignored; incremental, no 7-rule cap). `df ship` priority: house style → comment/scorecard bars → memory. Memory rules must stay abstract — never store private goal totals there. Plan-time hot topics live in `HOT_TOPICS_FILE` (gitignored).
 
 If the article config is missing when an article deliverable needs it, refuse to draft/finalize — do not silently fall back to an unconfigured write.
 
@@ -58,6 +65,7 @@ Always read `references/conventions.md` first — it holds every path, schema, a
 | `df ship` [`date`], evening, "写出来", "收工" | Optional target day (default today); action status + dual-write v1 (funnel skeleton; style abstract + memory) | `references/ship.md` |
 | `df comment` [`date`], "点评" | Optional; same target-day rule; confirm 终稿; advisory scorecard + critique; set `commented` | `references/comment.md` |
 | `df final` [`date`], "定稿", "配图", "校准" | Optional; same target-day rule; illustrate/OSS/calibrate/handoff | `references/final.md` |
+| `df study <资源> [--type book|codebase|video|tutorial]`, "学习", "带问题读", "读某章" | Optional question-driven reading loop routed by resource type: questions (all upfront) → answers/reflection → evaluation → Anki-ready cards → article feed | `references/study.md` |
 
 **Target day** (ship/comment/final only): `YYYY-MM-DD` / `today`/`昨天`/`yesterday`/`今天`; omit = calendar today. See `conventions.md`. Stamps (`✅`, `DateDone`, `commented`) use calendar today; files read/written are the target day's.
 
@@ -68,7 +76,7 @@ If the mode is ambiguous:
 3. Else if today's task has no `## Outcomes` v1 → `ship`.
 4. Else ask whether they want `comment` or `final`.
 
-Typical day: `review` → `plan` → work → `ship` → hand-edit → optional `comment` → `final` → publish → next morning `review`. Backfill: `df ship yesterday` then `df comment yesterday` / `df final yesterday`.
+Typical day: `review` → `plan` → work → `ship` → hand-edit → optional `comment` → `final` → publish → next morning `review`. Study day: `review` → `plan` → study (questions given upfront → read → answers) → confirm cards → next morning `review`. Backfill: `df ship yesterday` then `df comment yesterday` / `df final yesterday`.
 
 ## Rules that apply to every mode
 
@@ -78,9 +86,10 @@ Typical day: `review` → `plan` → work → `ship` → hand-edit → optional 
 3. **A live Obsidian instance will rewrite what you write.** Linter strips trailing whitespace after empty YAML values and `update-time-on-edit` rewrites `DateModified`. Expect a diff larger than your edit, and never treat that as corruption.
 4. **Never scan a vault recursively without a narrow path filter.** Use the exact scoped commands in `conventions.md`.
 5. **Read filenames and frontmatter, never note bodies**, unless the mode requires a named file (export draft, task Outcomes, objective ladders, etc.).
-6. **Never invent industry trends or news.** Why-today cites the objective / profile / yesterday **and**, when present, a **URL-backed** row in `HOT_TOPICS_FILE`. If a source was not fetched, write `未取到` — do not fabricate titles or links.
+6. **Never invent industry trends or news.** Hot-topic refresh (`df plan`; `df ship` must not open a second scrape) is **AI-themed only**. Prefer **TrendRadar** (MCP or `scripts/trendradar_hot_topics.py`) for zhihu / douyin / bilibili; WebSearch is fallback (and for x / youtube / google). Queries include `AI` / `人工智能` (or a named AI product); general trending tabs do not count. **Hot topics angle today's work; they are never the deliverable.** An article/script must be evidenced by a named action from today's task (or work already done today). A news recap of `HOT_TOPICS_FILE` with no lived step is invalid even if every row has a URL. Why-today cites the objective / profile / yesterday **and** today's action; a URL-backed AI row is optional seasoning. If a source was not fetched or had no AI hit, write `未取到` — do not fabricate titles or links. Clone TrendRadar only into `CODESPACE_DIR` from `local.config.md`.
 7. **Respect the time budget as a hard ceiling.**
 8. **Structured output only.** Candidate lists, plans, and reviews are tables or short bullets. Long prose is the article/script in `ship` (and image prompts inside `final`).
 9. **Edit in place, additively.** Preserve existing content; fill empty sections rather than rewriting files.
 10. **Feedback numbers are recorded, not trend-analyzed, for the first 7 days.** Auto-checking a ladder when a threshold is met is allowed. Optimization proposals in `df review` may use controllable process signals from day one; engagement *trends* unlock on day 8+.
 11. **Privacy.** Goal text, ladder thresholds, baselines, Latest Snapshot totals, and account names stay in the vault / gitignored configs. Open-source skill files and public README examples use placeholders only.
+12. **Study is optional and card-writing is gated.** `df study` runs only on request. Cards are drafted, confirmed with the user, then written to `STUDY_CARDS_DIR` (the only write exception to read-only `NOTES_VAULT`). Cards are internal review material — no goal numbers, no counters. Articles must rephrase card content; citation goes at the end, never inline pasted cards.

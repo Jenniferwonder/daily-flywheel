@@ -47,6 +47,18 @@ PUBLISH_SLOTS: pub_a, pub_b, pub_c
 # Copy local.hot-topics.example.md → local.hot-topics.md
 HOT_TOPICS_FILE: local.hot-topics.md
 
+# Third-party clones. Always clone into CODESPACE_DIR; never another folder.
+CODESPACE_DIR: D:\YourFolder\Codespace
+TRENDRADAR_DIR: D:\YourFolder\Codespace\TrendRadar
+
+# Optional. df study: question-driven reading-learning loop producing
+# Anki-compatible knowledge cards. STUDY_CARDS_DIR is the only write-allowed
+# exception to the read-only NOTES_VAULT rule. STUDY_TYPES is extensible
+# (book / tutorial / codebase / video). Leave blank to disable study.
+STUDY_CARDS_DIR:
+STUDY_DECK_PREFIX:
+STUDY_TYPES: book, tutorial, codebase, video
+
 # Optional. Extra rows for the df plan candidate table, beyond the generic
 # article / open-source archetypes in references/plan.md.
 # Leave blank (or omit) to skip. Put personal / channel-specific tactics here
