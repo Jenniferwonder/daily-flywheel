@@ -2,6 +2,8 @@
 
 Marks what got done and writes the **v1 draft snapshot** plus the editable working copy. Does **not** critique, illustrate, calibrate, or hand off publish slots — those are `df comment` / `df final`.
 
+**Manual only:** this mode runs only on explicit user request (`df ship` / 写出来 / 收工 / 生成文章). No other mode auto-triggers article generation — `study`, `plan`, and `review` never call ship.
+
 User-facing strings: `references/i18n.md` keys under `## ship`. Draft body language: `draft_language` in article config, else `LANGUAGE`.
 
 ## Step −1 — Resolve target day
@@ -87,7 +89,13 @@ Write the script package (title / spoken lines / shots or screen-record notes / 
 
 ### `deliverable: article`
 
-**Topic gate (articles, required when house style / memory says so — default on for this vault):** After status is `done` / `half-done` / `changed direction`, do **not** write the article body yet. In the same turn or the next wait, propose: (1) today's one topic sentence + why it is the highest-value finishable piece from **today's Actions**; (2) a short outline (spine + chapter list). Wait for confirm or a revised topic. Only then draft. Generating several full drafts to “see which one lands” is forbidden.
+**Topic gate (articles, hard — never auto-draft):** After status is `done` / `half-done` / `changed direction`, do **not** write the article body yet. Run these gates in order, waiting for confirmation at each:
+
+1. **定题 (brainstorm).** Use the `brainstorming` skill when available to sharpen the topic: propose today's one topic sentence + why it is the highest-value finishable piece from **today's Actions**. User confirms or revises.
+2. **大纲 (outline).** After the topic is confirmed, build a short outline (spine + chapter list). Use the `writing-assistant` skill when available (its outline bars: a “why” section with ≥3 reasons, 3–5 scenarios covering ≥3 personas, a specific/credible/attractive promise, ≤15 chapters). User confirms or revises.
+3. **Draft.** Only after topic AND outline are both confirmed, write the v1.
+
+Generating several full drafts to “see which one lands” is forbidden. If the `brainstorming` / `writing-assistant` skills are unavailable, run the same gates with the built-in bars (`article-craft.md`).
 
 Write markdown, first person, sized under `ship_policy`. **流程短文** prefer 1500–2500 characters of substance when time allows. **深度长文**（house style「何时用哪一套」）不压这个字数；长度 = 跳过共识后仍能指到文件的机制。
 

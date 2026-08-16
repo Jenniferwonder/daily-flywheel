@@ -95,7 +95,7 @@ All high-value questions covering **every key concept** of the unit are given up
 ### `df ship` → hand-edit → (optional) `df comment` → `df final`
 
 ```
-ship: task checkboxes + dual-write v1 (funnel skeleton; style abstract + memory, no long sample essays)
+ship: **manual trigger only**; topic brainstorm (brainstorming skill when available) → outline confirmation (writing-assistant skill when available) → then dual-write v1 (funnel skeleton; style abstract + memory, no long sample essays)
 comment: confirm final → advisory checklist score + four-line critique → commented date
 final: confirm final → images+OSS (articles) → calibrate → publish handoff
 ```

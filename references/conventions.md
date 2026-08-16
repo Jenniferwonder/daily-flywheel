@@ -72,6 +72,19 @@ Always say one line at start: `Target day: YYYY-MM-DD` (`shared.target_announce`
   the distilled output, written only after user confirmation.
 - Long units split into multiple cycles; each cycle is its own `te-` task.
 
+## Article gate (ship)
+
+- Article generation is **manual `df ship` only**; no mode auto-triggers it
+  (study feeds material, never a draft).
+- Before drafting the body, both gates must be confirmed by the user:
+  1. **Topic** — brainstormed first (use the `brainstorming` skill when
+     available): one sentence + why it is the highest-value finishable piece
+     from the day's Actions.
+  2. **Outline** — built after topic confirmation (use the `writing-assistant`
+     skill when available): spine + chapter list, Why + ≥3 reasons, 3–5
+     scenarios, ≤15 chapters.
+- Only after both are confirmed may `df ship` write v1. No multi-draft fishing.
+
 ## Scoped scan commands
 
 Never substitute a broader scan. On a cloud-synced or network drive a depth-2 recursive listing can take ~50 seconds.

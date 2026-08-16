@@ -97,7 +97,7 @@ npx skills add Jenniferwonder/daily-flywheel --agent cursor --global
 ### `df ship` → 手改 →（可选）`df comment` → `df final`
 
 ```
-ship：勾待办 + 双写 v1（漏斗骨架；读风格摘要+校准，不重读长范文）
+ship：**只手动触发**；正文前必经定题（brainstorm，可借 brainstorming skill）→ 大纲确认（可借 writing-assistant skill）→ 才双写 v1（漏斗骨架；读风格摘要+校准，不重读长范文）
 comment：确认终稿后清单打分（不拦 final）+ 四行点评，写 commented
 final：再确认终稿 → 配图+OSS（文章）→ 校准 → 发布交接
 ```

@@ -57,8 +57,10 @@ produces its own cards.
    `<PREFIX>::Ch-XX`. See template. Cards are internal review material — no goal
    numbers, no counters.
 7. **Article handoff.** Cards + Q&A are the material for a later `df ship`.
-   Article body must rephrase — never paste card content verbatim; the article
-   may end with a note citing the card note it drew on.
+   `df ship` is **manual-only** and topic/outline-gated (see
+   `references/ship.md`) — study never auto-triggers an article. Article body
+   must rephrase — never paste card content verbatim; the article may end with
+   a note citing the card note it drew on.
 
 ## Card template (Obsidian_to_Anki)
 
