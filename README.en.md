@@ -214,10 +214,15 @@ scripts/                          OSS image upload (df final)
 
 ## More tips
 
-I write about this workflow and other agent-skill experiments in Chinese. Two pieces cover how this skill was designed:
+For updates, new feature walkthroughs, and step-by-step tutorials, I write in Chinese. The daily-flywheel skill's design notes and how-to live in my WeChat AI workflow series (Zhihu mirrors, publish order):
 
-- [Building an AI + Obsidian learning-output workflow, so you never stall on "what should I study today"](https://zhuanlan.zhihu.com/p/2067904165205087916)
-- [Letting AI run the article pipeline end to end](https://zhuanlan.zhihu.com/p/2068384023894922886)
+1. [Building an AI + Obsidian learning-output workflow, so you never stall on "what should I study today"](https://zhuanlan.zhihu.com/p/2067904165205087916)
+2. [Letting AI run the article pipeline end to end](https://zhuanlan.zhihu.com/p/2068384023894922886)
+3. [Breaking a north-star goal down to a daily, countable action](https://zhuanlan.zhihu.com/p/2068951424130606543)
+4. [Script in hand, still can't shoot: first day of AI tech-video production](https://zhuanlan.zhihu.com/p/2069437689905017138)
+5. [Full recap: I shipped my first AI-topic video](https://zhuanlan.zhihu.com/p/2071322742285195193)
+6. [Tuning the writing workflow: hot topics in planning, titles that hit](https://zhuanlan.zhihu.com/p/2071915456995258401)
+7. [An AI reading method: turn a classic into a personal knowledge system](https://zhuanlan.zhihu.com/p/2072801961523599091)
 
 If this skill got your daily shipping habit running, a Star ⭐️ helps.
 

@@ -214,10 +214,15 @@ scripts/                            OSS 图床上传（df final）
 
 ## 更多 skill 使用技巧
 
-想看更多 skill 的用法与我的踩坑记录，欢迎关注公众号 [瞻思于学](https://mp.weixin.qq.com/s/mg0mI3uHPAENDrHtZqUuxA)，各平台同名。这个技能本身的设计过程我写过两篇：
+想看更多 skill 的最新功能玩法、更新动态和保姆级教程，欢迎关注公众号 [瞻思于学](https://mp.weixin.qq.com/s/mg0mI3uHPAENDrHtZqUuxA)，各平台同名。daily-flywheel skill 的设计过程与使用方法，详见我的公众号 AI 工作流系列文章：
 
-- [用 AI + Obsidian 搭一套智能化学习产出工作流，再也不用纠结今天学什么了](https://mp.weixin.qq.com/s/mg0mI3uHPAENDrHtZqUuxA)
-- [让 AI 优化文章创作流：写文章不用愁了](https://mp.weixin.qq.com/s/vmtMSp3LVyIxeSs9humJaQ)
+1. [用 AI + Obsidian 搭一套智能化学习产出工作流，再也不用纠结今天学什么了](https://mp.weixin.qq.com/s/mg0mI3uHPAENDrHtZqUuxA)
+2. [让 AI 优化文章创作流：写文章不用愁了](https://mp.weixin.qq.com/s/vmtMSp3LVyIxeSs9humJaQ)
+3. [用 Obsidian + AI 将大目标拆到每天：确保实现可量化的行动价值](https://mp.weixin.qq.com/s/8oYScF_kbPZ-1Xo3dyyZsA)
+4. [想用 AI 做技术视频：脚本有了，为什么还是拍不出来](https://mp.weixin.qq.com/s/NS3pvbtY8JgMB82S_MTTVw)
+5. [用 AI 做视频超全总结：我成功制作并发布了一条 AI 主题视频](https://mp.weixin.qq.com/s/aZVIEWDokvvzrm-xdvnKPA)
+6. [AI 创作工作流优化：让选题接上热点，标题击中卖点](https://mp.weixin.qq.com/s/mkDQzzgeJ4EaN9AAyi5j-g)
+7. [AI 高效阅读法：把经典著作变成你的个人知识体系，实现系统学习](https://mp.weixin.qq.com/s/ScXRaI5tkS1DdCq4mRufQw)
 
 如果这个技能帮你把日更跑起来了，给个 Star ⭐️ 支持一下。
 
