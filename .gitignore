@@ -11,6 +11,10 @@ local.article.memory.md
 local.article.style.md
 local.hot-topics.md
 
+# Private script outline bars. Never commit. Do not put this under references/.
+script-craft.md
+local.script.craft.md
+
 # OS junk
 Thumbs.db
 desktop.ini

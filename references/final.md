@@ -24,6 +24,8 @@ Read:
 
 If type is `other` (or no pub/script artifact exists): **stop**. No illustrate, no calibrate-as-article. Point them to tomorrow's `df review`.
 
+If type is `script`: the working file is `{id}-script.md` inside the pack under `SCRIPT_PACK_DIR`. On **yes** in Step 1, copy/lock it to `{id}-script-final.md` in the **same** pack (do not move the pack into the notes vault). Fill shot-list / editing / publishing if they are still stubs. In chat name the pack folder only — no OS paths.
+
 ## Step 1 — Final-draft gate (always)
 
 Ask `final.q_is_final` for `LANGUAGE`, then wait.
@@ -86,14 +88,14 @@ If OSS keys are missing: one line that hosting was skipped; do not invent creden
 
 Phase 0 does not auto-publish.
 
-- Point at the export-path working markdown (post-OSS links for articles)
+- Point at the export-path working markdown (post-OSS links for articles; scripts: pack `{id}-script-final.md`)
 - For each key in `PUBLISH_SLOTS`, follow `publish_export` in `local.article.config.md`; skip missing entries in one line
 - Do not demand publish URLs tonight; tomorrow `df review` syncs YAML → task
 
 Append under task `## Outcomes` (do not overwrite v1 body):
 
-- `终稿路径: <export path>`
-- `配图目录: <images dir>` when relevant
+- `终稿路径:` pack folder + filename (vault-relative / `SCRIPT_PACK_DIR/<folder>`). **No OS path.**
+- `配图目录:` when relevant (articles only)
 
 Set `status: 🟢Done` / `DateDone` when the deliverable path exists; else leave `🟡Doing`.
 

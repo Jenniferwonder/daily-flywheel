@@ -59,6 +59,18 @@ STUDY_CARDS_DIR:
 STUDY_DECK_PREFIX:
 STUDY_TYPES: book, tutorial, codebase, video
 
+# Optional. df ship when deliverable is script. Never used on article days.
+# SCRIPT_STYLE_PATH: distilled video style (not long sample transcripts).
+# SCRIPT_CRAFT_PATH: gitignored outline bars; copy script-craft.example.md
+# → script-craft.md (also gitignored). Do not commit. Do not fall back to
+# article-craft.md.
+SCRIPT_STYLE_PATH:
+SCRIPT_CRAFT_PATH: script-craft.md
+# Video pack root + sample folder name (not a full OS path in examples).
+# Real SCRIPT_PACK_DIR lives only in local.config.md (gitignored).
+SCRIPT_PACK_DIR:
+SCRIPT_PACK_SAMPLE: YYMMDD-example-video-pack
+
 # Optional. Extra rows for the df plan candidate table, beyond the generic
 # article / open-source archetypes in references/plan.md.
 # Leave blank (or omit) to skip. Put personal / channel-specific tactics here

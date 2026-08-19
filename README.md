@@ -102,7 +102,7 @@ comment：确认终稿后清单打分（不拦 final）+ 四行点评，写 comm
 final：再确认终稿 → 配图+OSS（文章）→ 校准 → 发布交接
 ```
 
-缺 `local.article.config.md` 时文章 ship/final 会直接拒绝，而不是退化成无约束草稿。
+缺 `local.article.config.md` 时文章 ship/final 会直接拒绝，而不是退化成无约束草稿。脚本日缺 `SCRIPT_STYLE_PATH` 或 `script-craft.md` 同样拒绝，且不会去读文章文风。
 
 ## 依赖
 
@@ -160,6 +160,7 @@ cp local.article.config.example.md local.article.config.md
 ```bash
 cp local.article.style.example.md local.article.style.md
 cp local.hot-topics.example.md local.hot-topics.md
+cp script-craft.example.md script-craft.md
 ```
 
 **4. 跑起来**
@@ -200,10 +201,11 @@ references/
   ship.md                           初稿双写（漏斗骨架；风格摘要 + 校准）
   comment.md                        可选点评（清单打分不拦 final）
   final.md                          定稿配图 / 校准 / 发布交接
-  article-craft.md                  选题/漏斗/打分抽象槽位
+  article-craft.md                  选题/漏斗/打分抽象槽位（仅文章日）
 local.config.example.md             vault 路径模板
 local.article.config.example.md     人设 / 读者 / 导出 / 配图模板（私有）
 local.article.style.example.md      抽出来的文章风格摘要模板（私有）
+script-craft.example.md             脚本大纲闸模板（工作副本 `script-craft.md` 不入库）
 local.hot-topics.example.md         近 7 天热点笔记模板（私有）
 scripts/                            OSS 图床上传（df final）
 ```

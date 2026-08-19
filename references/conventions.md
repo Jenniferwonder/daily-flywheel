@@ -85,6 +85,33 @@ Always say one line at start: `Target day: YYYY-MM-DD` (`shared.target_announce`
      scenarios, ≤15 chapters.
 - Only after both are confirmed may `df ship` write v1. No multi-draft fishing.
 
+## Script gate (ship)
+
+- Script generation is **manual `df ship` only**, same as articles.
+- Peek task `deliverable` **before** loading any style file. Empty / not one of
+  `article` | `script` | `other` → stop; user edits YAML. No verbal override.
+- `script` days read `SCRIPT_STYLE_PATH` + gitignored `script-craft.md` only.
+  They must **not** open `local.article.style.md`, `article-craft.md`, or
+  `local.article.memory.md`.
+- Before drafting spoken lines, both gates must be confirmed:
+  1. **Packaging** — 3–5 titles/hooks; topic locked to the task Purpose artifact.
+  2. **Outline** — bars from `script-craft.md` (not article-craft): Why / scenes /
+     chapters, **plus a shot-type on every chapter**.
+- Copy `script-craft.example.md` → `script-craft.md` (gitignored). Never commit
+  the working file; never place it under `references/`.
+- **Pack export:** every script and its sibling files go in a new folder under
+  `SCRIPT_PACK_DIR` (from gitignored `local.config.md`). Copy the **filename
+  set** of `SCRIPT_PACK_SAMPLE` (a folder name, not a path):
+  `{id}-project.md`, `{id}-script.md`, and later `{id}-script-final.md`,
+  `{id}-shot-list.md`, `{id}-editing-checklist.md`,
+  `{id}-publishing-checklist.md`, plus `imgs/prompts/` when needed.
+  Folder name: `YYMMDD-<slug>`. File id: `YYMM.DD` (e.g. sample `2608.09`).
+  `df ship` writes `project` + `script` (v1). `df final` writes `script-final`
+  and fills the checklists if still stubs.
+- Never put scripts in the notes-vault `insights-to-share` tree.
+- Never write absolute disk paths into this repository, examples, or chat.
+  Refer to `SCRIPT_PACK_DIR/<folder>` or the pack folder name only.
+
 ## Scoped scan commands
 
 Never substitute a broader scan. On a cloud-synced or network drive a depth-2 recursive listing can take ~50 seconds.
@@ -340,6 +367,9 @@ Private files in the skill directory (gitignored, never committed):
 | `local.article.style.md` | Distilled house style for `df ship` (not long sample essays) |
 | `local.article.memory.md` | Incremental executable rewrite rules from v1→final (`df ship` + `df final`); no 7-rule cap; skip dup/contradict |
 | `local.hot-topics.md` (or `HOT_TOPICS_FILE`) | URL-backed last-7-day topics for `df plan` |
+| `script-craft.md` (`SCRIPT_CRAFT_PATH`) | Script outline bars (`df ship` when `deliverable: script`); gitignored |
+| `SCRIPT_STYLE_PATH` (in `local.config.md`) | Distilled video style for script days only |
+| `SCRIPT_PACK_DIR` / `SCRIPT_PACK_SAMPLE` | Video pack root + sample **folder name**; OS path stays in gitignored config only |
 
 Copy `local.article.config.example.md` to create the real config. Article ship/final
 refuse if the file or its required keys are missing. Publish URLs belong in the

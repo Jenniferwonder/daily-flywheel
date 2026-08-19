@@ -13,13 +13,31 @@ Per `conventions.md` **Target day**: parse optional date from the trigger (`df s
 Read, in this order:
 
 1. `local.config.md`
-2. `local.article.config.md` — **required** when the **target day's** `deliverable` is `article` (or the plan is clearly a `pub-*` article). Also read `positioning` / `personas` / `taboos` / `term_map` when present.
-3. `local.article.style.md` (or `style_path` if it already points at a **short** distilled file). **Do not** open long sample essays on every ship. If the style file is missing, use inline `style:`. If `style_path` resolves to a full sample post (long narrative, many screenshots), ignore it and use `local.article.style.md` or inline `style:`.
-4. `references/article-craft.md` — **comment/scorecard rules** (funnel, Why≥3, title formula, 3-second open, chunks). These are the same bars `df comment` scores.
-5. `local.article.memory.md` if it exists — **all** active rules (incremental; no 7-rule cap). Skip a rule that duplicates or contradicts a higher-priority source.
-6. **Target day's** daily note and its main task file
+2. **Target day's** daily note and its main task file — need `deliverable` **before** any style load
 
-**Draft priority (high → low, on conflict):** house style → `df comment` / article-craft bars → calibration memory. Memory never overrides style or comment bars.
+### Deliverable YAML gate
+
+`deliverable` must be exactly `article` | `script` | `other`. If it is empty or any other string: **STOP**. Show `ship.gate_deliverable` for `LANGUAGE`. Do **not** infer from folder names, filenames, or chat. Do **not** accept a verbal override — the user edits the task YAML and re-runs.
+
+### Load by `deliverable`
+
+**`article`** — same files as before, then Step 0:
+
+1. `local.article.config.md` — required (see Step 0). Also read `positioning` / `personas` / `taboos` / `term_map` when present.
+2. `local.article.style.md` (or `style_path` if it already points at a **short** distilled file). **Do not** open long sample essays on every ship. If the style file is missing, use inline `style:`. If `style_path` resolves to a full sample post (long narrative, many screenshots), ignore it and use `local.article.style.md` or inline `style:`.
+3. `references/article-craft.md` — **comment/scorecard rules** (funnel, Why≥3, title formula, 3-second open, chunks). These are the same bars `df comment` scores.
+4. `local.article.memory.md` if it exists — **all** active rules (incremental; no 7-rule cap). Skip a rule that duplicates or contradicts a higher-priority source.
+
+**Draft priority (article, high → low, on conflict):** house style → `df comment` / article-craft bars → calibration memory. Memory never overrides style or comment bars.
+
+**`script`** — do **not** read `local.article.style.md`, `references/article-craft.md`, or `local.article.memory.md`. Skip Step 0 required article keys.
+
+1. `SCRIPT_STYLE_PATH` from `local.config.md` (distilled video style, e.g. a vault `style-summary.md`). If missing/empty, **STOP** and tell the user to fill the key. **Do not** open long sample transcripts on every ship.
+2. `SCRIPT_CRAFT_PATH` from `local.config.md` (default `script-craft.md` in this skill directory). If missing, tell the user to copy `script-craft.example.md` → `script-craft.md`. **Never** fall back to `article-craft.md`.
+
+**Draft priority (script):** video style file only. Outline/gate bars come from `script-craft.md`, not article-craft.
+
+**`other`** — skip style / craft / memory loads. Skip Step 0.
 
 Do not read further back than needed for that day.
 
@@ -85,7 +103,21 @@ Never draft a deliverable not backed by the **target day's** work.
 
 ### `deliverable: script`
 
-Write the script package (title / spoken lines / shots or screen-record notes / CTA) to the export path from article config **or** the path agreed in the task Purpose (e.g. under `insights-to-share` with a `script-` slug). Dual-write the same bytes to task `## Outcomes` as frozen v1.
+**Packaging + outline gates (scripts, hard — never auto-draft):** After status is `done` / `half-done` / `changed direction`, do **not** write spoken lines yet. Run these gates in order, waiting for confirmation at each. Bars come **only** from `SCRIPT_CRAFT_PATH` (`script-craft.md`). Do **not** open `article-craft.md`. Do **not** use the writing-assistant article outline bars.
+
+1. **包装 (titles/hooks).** Topic is **locked** to the artifact named in today's task `## Purpose` (the published article, demo, or event). Brainstorm 3–5 video titles / 3-second hooks only — packaging, not a new topic. Use the `brainstorming` skill when available. User confirms or revises. Show `ship.gate_script_packaging`.
+2. **大纲 (outline).** After packaging is confirmed, build the outline per `script-craft.md` (article-shaped Why / scenes / chapters, **and** a shot-type on every chapter: 口播画面 / 录屏或动画 / 字幕图标). User confirms or revises. Show `ship.gate_script_outline`.
+3. **Draft.** Only after packaging AND outline are both confirmed, write the
+   pack under `SCRIPT_PACK_DIR` (required in `local.config.md`; stop if blank).
+   Create `YYMMDD-<slug>/` using today's date + a short slug. Copy the
+   **filename set** of `SCRIPT_PACK_SAMPLE` (folder name only). `df ship`
+   writes `{id}-project.md` + `{id}-script.md` (v1 spoken lines / shot types /
+   CTA). Stub shot-list / editing / publishing checklists if the sample has
+   them; do not invent a second schema. Dual-write the **script** bytes to
+   task `## Outcomes` as frozen v1. Task Purpose / chat may name
+   `SCRIPT_PACK_DIR/<folder>` or the pack folder — **never** an OS path.
+
+Generating several full drafts to “see which one lands” is forbidden. Voice from `SCRIPT_STYLE_PATH` only.
 
 ### `deliverable: article`
 

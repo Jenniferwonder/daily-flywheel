@@ -11,6 +11,8 @@ Private files (never commit):
 | `local.article.memory.md` | v1→final calibration rules (`df ship` + `df final`) |
 | `{{HOT_TOPICS_FILE}}` | last-7-day sourced topics (`df plan`) |
 
+Script days do **not** read this file. Their outline bars live in gitignored `script-craft.md`.
+
 ## Plan — three-way filter (not per-candidate web counts)
 
 A candidate is valid only if **all three** are non-zero:

@@ -40,6 +40,10 @@ Every path, goal filename, and platform name in this skill is a placeholder. Res
 | `STUDY_CARDS_DIR` | Optional. Write-allowed dir for study cards + theme note (sole exception to read-only `NOTES_VAULT`). Blank disables `df study`. |
 | `STUDY_DECK_PREFIX` | Optional. Anki deck prefix for study cards, e.g. `AI-Engineering`. |
 | `STUDY_TYPES` | Optional. Comma list of supported learning kinds: `book, tutorial, codebase, video`. Extend by editing this key. |
+| `SCRIPT_STYLE_PATH` | Optional. Distilled **video** house style for `df ship` when `deliverable: script`. Absolute path. Blank → script ship refuses. Never read this on article days. |
+| `SCRIPT_CRAFT_PATH` | Optional. Gitignored script outline bars (`script-craft.md` in this directory by default). Copy `script-craft.example.md`. Never commit the working file; never fall back to `article-craft.md`. |
+| `SCRIPT_PACK_DIR` | Optional. Root folder for video packs when `deliverable: script`. Set only in gitignored `local.config.md`. Never write the resolved OS path into this repository, examples, or chat. |
+| `SCRIPT_PACK_SAMPLE` | Optional. Folder name (not a path) of the sample pack to copy. Default layout: `YYMMDD-slug/` with `{id}-project.md`, `{id}-script.md`, later `{id}-script-final.md` / shot-list / editing / publishing checklists. |
 
 If `local.config.md` does not exist, stop and tell the user to copy `local.config.example.md` to `local.config.md` and fill it in. Do not guess a vault path, and do not proceed with placeholders unresolved — writing to a guessed path scatters files into the wrong vault.
 
@@ -52,6 +56,10 @@ If `NOTES_VAULT` is absent or points nowhere, skip dedup scanning rather than fa
 Article drafts (`df ship`) and article finalize (`df final`) require `local.article.config.md` (gitignored). Copy from `local.article.config.example.md`. Distilled house style lives in `local.article.style.md` (copy `local.article.style.example.md`); `df ship` reads that file instead of long sample essays. Learned edit rules from v1→final diffs live in `local.article.memory.md` (also gitignored; incremental, no 7-rule cap). `df ship` priority: house style → comment/scorecard bars → memory. Memory rules must stay abstract — never store private goal totals there. Plan-time hot topics live in `HOT_TOPICS_FILE` (gitignored).
 
 If the article config is missing when an article deliverable needs it, refuse to draft/finalize — do not silently fall back to an unconfigured write.
+
+Script drafts (`deliverable: script`) read `SCRIPT_STYLE_PATH` + `SCRIPT_CRAFT_PATH` only. They must **not** open `local.article.style.md`, `article-craft.md`, or `local.article.memory.md`. If either script path is missing, refuse to draft.
+
+Script and related files always land in a new pack under `SCRIPT_PACK_DIR`, copying the filename set of `SCRIPT_PACK_SAMPLE`. Do **not** write scripts into the notes-vault `insights-to-share` tree. Do **not** paste absolute disk paths into committed skill files, examples, or user-facing chat — say `SCRIPT_PACK_DIR/<folder>` or the vault-relative pack name.
 
 ## Routing
 

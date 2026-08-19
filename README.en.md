@@ -158,6 +158,7 @@ cp local.article.config.example.md local.article.config.md
 ```bash
 cp local.article.style.example.md local.article.style.md
 cp local.hot-topics.example.md local.hot-topics.md
+cp script-craft.example.md script-craft.md
 ```
 
 **4. Run it**
@@ -200,10 +201,11 @@ references/
   ship.md                         evening (funnel skeleton; style abstract + memory)
   comment.md                      optional critique (advisory scorecard; does not block final)
   final.md                        illustrate / calibrate / publish handoff
-  article-craft.md                abstract slots for topic / funnel / score
+  article-craft.md                abstract slots for topic / funnel / score (articles only)
 local.config.example.md           vault path template
 local.article.config.example.md   voice / audience / export / illustration template (private)
 local.article.style.example.md    distilled house-style template (private)
+script-craft.example.md           script outline-gate template (working `script-craft.md` is gitignored)
 local.hot-topics.example.md       last-7-day hot-topics template (private)
 scripts/                          OSS image upload (df final)
 ```
